@@ -1,0 +1,8 @@
+.app-brand {
+    color: black;
+    text-decoration: none;
+}
+
+.app-brand:hover {
+    text-decoration: underline;
+}

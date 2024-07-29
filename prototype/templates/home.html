@@ -1,0 +1,17 @@
+{% extends '_page-two-third-width.html' %}
+
+{% block content %}
+<h2>Shopping list</h2>
+
+<form class="d-flex justify-content-center align-items-center mb-4">
+    <div class="form-outline flex-fill">
+        <label class="form-label d-none" for="item">Add to list</label>
+        <input type="text" id="item" class="form-control" placeholder="Add item to list..."/>
+    </div>
+    <a href="home-1.html" class="btn btn-primary ms-2">Add</a>
+</form>
+
+<p>Your shopping list is empty.</p>
+
+
+{% endblock %}
