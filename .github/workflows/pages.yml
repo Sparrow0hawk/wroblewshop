@@ -1,0 +1,43 @@
+name: Build and deploy prototype
+
+on:
+    push:
+        branches: [ "main" ]
+
+permissions:
+  pages: write
+  id-token: write
+
+jobs:
+    pages:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python 3.12
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.12'
+                cache: 'pip'
+
+            - name: Create virtual environment
+              run: python3 -m venv --upgrade-deps .venv
+
+            - name: Install project dependencies
+              run: .venv/bin/pip install -r requirements.txt
+
+            - name: Build prototype
+              run: make prototype-build
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                path: 'prototype/_site'
+
+            - name: Deploy to GitHub Pages
+              uses: actions/deploy-pages@v4
+
+
