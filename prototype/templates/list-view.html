@@ -1,0 +1,39 @@
+{% extends '_page-two-third-width.html' %}
+
+{% block content %}
+<h2>Shopping list</h2>
+<form>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="halloumi" id="item1">
+        <label class="form-check-label" for="item1">
+            Halloumi
+        </label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="sweet-potato" id="item2">
+        <label class="form-check-label" for="item2">
+            Sweet potato
+        </label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="basmatic-rice" id="item3">
+        <label class="form-check-label" for="item3">
+            Basmati rice
+        </label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="shampoo" id="item4">
+        <label class="form-check-label" for="item4">
+            Shampoo
+        </label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="toothpaste" id="item5">
+        <label class="form-check-label" for="item5">
+            Toothpaste
+        </label>
+    </div>
+    <a class="btn btn-success" href="home.html">Complete shop</a>
+</form>
+
+{% endblock %}

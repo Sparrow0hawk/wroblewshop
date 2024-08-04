@@ -1,0 +1,37 @@
+{% extends '_page-two-third-width.html' %}
+
+{% block content %}
+<h2>Add new meal</h2>
+
+<form>
+    <fieldset class="form-group mb-3">
+        <legend class="form-label">Details</legend>
+        <label class="form-label" for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name">
+    </fieldset>
+    <fieldset class="form-group mb-3">
+        <legend class="form-label">Ingredients</legend>
+
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <select class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false" aria-label="Single use or store cupboard">
+                <option value="single-use">Single Use</option>
+                <option value="store-cupboard">Store cupboard</option>
+            </select>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <select class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false" aria-label="Single use or store cupboard">
+                <option value="single-use">Single Use</option>
+                <option value="store-cupboard">Store cupboard</option>
+            </select>
+        </div>
+
+    </fieldset>
+    <a class="btn btn-primary" href="home.html">Add ingredient</a>
+    <a class="btn btn-success" href="home.html">Confirm</a>
+</form>
+
+{% endblock %}

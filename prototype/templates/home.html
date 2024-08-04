@@ -1,17 +1,25 @@
 {% extends '_page-two-third-width.html' %}
 
 {% block content %}
-<h2>Shopping list</h2>
+<h2>Welcome to Wrobleshop</h2>
 
-<form class="d-flex justify-content-center align-items-center mb-4">
-    <div class="form-outline flex-fill">
-        <label class="form-label d-none" for="item">Add to list</label>
-        <input type="text" id="item" class="form-control" placeholder="Add item to list..."/>
+<p>Select meals for the week to add to your list:</p>
+<form>
+    <div class="row pb-3">
+        <div class="col-sm">
+            <div class="form-check">
+                <label for="meal-1" class="card-title">Halloumi Rice</label>
+                <input class="form-check-input" id="meal-1" type="checkbox">
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-check">
+                <label for="meal-2" class="card-title">Pasta bake</label>
+                <input class="form-check-input" id="meal-2" type="checkbox">
+            </div>
+        </div>
     </div>
-    <a href="home-1.html" class="btn btn-primary ms-2">Add</a>
+    <a class="btn btn-primary" href="add-meal.html">Add new meal</a>
+    <a class="btn btn-success" href="check-store.html">Continue</a>
 </form>
-
-<p>Your shopping list is empty.</p>
-
-
 {% endblock %}

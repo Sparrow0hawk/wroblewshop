@@ -1,0 +1,23 @@
+{% extends '_page-two-third-width.html' %}
+
+{% block content %}
+<h2>Check sundries</h2>
+
+<form>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="shampoo" id="item1">
+        <label class="form-check-label" for="item1">
+            Shampoo
+        </label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" value="toothpaste" id="item2">
+        <label class="form-check-label" for="item2">
+            Toothpaste
+        </label>
+    </div>
+    <a class="btn btn-primary" href="add-sundry.html">Add sundry</a>
+    <a class="btn btn-success" href="review-list.html">Confirm</a>
+</form>
+
+{% endblock %}
