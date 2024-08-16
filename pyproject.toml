@@ -1,0 +1,13 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "wroblewshop"
+authors = [{name = "Alex Coleman", email = "hello@alexjcoleman.me"}]
+description = "A shopping list app"
+version = "0.1.0"
+
+dependencies = [
+    "Flask~=3.0.0"
+]

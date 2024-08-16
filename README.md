@@ -14,7 +14,7 @@ To run this repository you will need:
    ```
    source .venv/bin/activate
    
-   pip install -r requirements.txt
+   pip install -e .
    ```
 3. Build prototype
    ```bash
