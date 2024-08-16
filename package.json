@@ -1,0 +1,25 @@
+{
+  "name": "wroblewshop",
+  "version": "1.0.0",
+  "description": "A shopping list app",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "npm run copy-css && npm run copy-bootstrap",
+    "copy-css": "cp src/wroblewshop/assets/app.css src/wroblewshop/static/app.css",
+    "copy-bootstrap": "npm run copy-bootstrap-css && npm run copy-bootstrap-js",
+    "copy-bootstrap-js": "cp -r node_modules/bootstrap/dist/js src/wroblewshop/static/",
+    "copy-bootstrap-css": "cp -r node_modules/bootstrap/dist/css/bootstrap.min.css src/wroblewshop/static/"
+  },
+  "author": "Alex Coleman",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  },
+  "engines": {
+    "node": "22",
+    "npm": "10"
+  }
+}

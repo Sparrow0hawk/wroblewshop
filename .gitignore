@@ -3,6 +3,13 @@
 
 # python
 .venv
+__pycache__
 
 # prototype
 prototype/_site
+
+# node
+node_modules
+
+# mac
+.DS_Store
