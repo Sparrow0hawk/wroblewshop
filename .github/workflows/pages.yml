@@ -2,8 +2,8 @@ name: Build and deploy prototype
 
 on:
     push:
-        branches: [ "main" ]
-
+        paths:
+          - prototype/**
 permissions:
   pages: write
   id-token: write
