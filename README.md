@@ -40,3 +40,16 @@ To view the noddy prototype:
    # can also use the Makefile target
    make prototype 
    ```
+
+## Docker
+
+To build the project with Docker, complete [project setup](#setup) and run:
+
+1. Docker build
+   ```bash
+   docker build . -t wroblewshop
+   ```
+1. Run container and view at http://127.0.0.1:5000
+   ```bash
+   docker run --rm -p 5000:5000 wroblewshop:latest
+   ```
