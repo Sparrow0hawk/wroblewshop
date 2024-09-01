@@ -3,7 +3,7 @@ from typing import Any
 
 from flask import Flask
 
-from wroblewshop import start
+from wroblewshop import home, start
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
@@ -13,5 +13,6 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
         app.config.from_mapping(test_config)
 
     app.register_blueprint(start.bp)
+    app.register_blueprint(home.bp, url_prefix="/home")
 
     return app
