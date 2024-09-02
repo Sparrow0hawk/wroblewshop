@@ -4,19 +4,7 @@ import pytest
 from flask import Flask
 from playwright.sync_api import Page
 
-
-class HomePage:
-    def __init__(self, page: Page):
-        self._page = page
-
-    @classmethod
-    def open(cls, page: Page) -> HomePage:
-        page.goto("/home")
-        return cls(page)
-
-    @property
-    def is_visible(self) -> bool:
-        return self._page.get_by_role("heading", name="Home", exact=True).is_visible()
+from tests.e2e.pages import HomePage
 
 
 @pytest.mark.usefixtures("live_server")
