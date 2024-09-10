@@ -1,9 +1,8 @@
 from functools import wraps
-from typing import Callable
+from typing import Callable, ParamSpec, TypeVar
 
 from authlib.integrations.flask_client import OAuth
 from flask import Blueprint, Response, current_app, redirect, session, url_for
-from typing_extensions import ParamSpec, TypeVar
 from werkzeug import Response as BaseResponse
 
 bp = Blueprint("auth", __name__)
