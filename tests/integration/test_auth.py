@@ -9,7 +9,4 @@ def test_logout_logs_out_from_oidc(client: FlaskClient) -> None:
 
     response = client.get("/auth/logout")
 
-    assert (
-            response.status_code == 302 and
-            response.location == "/"
-    )
+    assert response.status_code == 302 and response.location == "/"
