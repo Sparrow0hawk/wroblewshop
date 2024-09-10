@@ -6,6 +6,7 @@ from playwright.sync_api import Page
 class StartPage:
     def __init__(self, page: Page):
         self._page = page
+        self._button = page.get_by_role("button")
 
     @classmethod
     def open(cls, page: Page) -> StartPage:
@@ -17,6 +18,10 @@ class StartPage:
         return self._page.get_by_role(
             "heading", name="Wroblewshop", exact=True
         ).is_visible()
+
+    def start(self) -> HomePage:
+        self._button.click()
+        return HomePage(self._page)
 
 
 class HomePage:

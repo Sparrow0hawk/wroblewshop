@@ -11,7 +11,6 @@ from authlib.oidc.core.grants import OpenIDCode
 from authlib.oidc.core.models import AuthorizationCodeMixin
 
 from tests.e2e.oidc_server.clients import StubClient
-from tests.e2e.oidc_server.jwts import PrivateKeyJwtClientAssertion
 from tests.e2e.oidc_server.users import StubUser, UserRepository
 
 
@@ -68,8 +67,6 @@ class AuthorizationCodeRepository:
 
 
 class StubAuthorizationCodeGrant(AuthorizationCodeGrant):  # type: ignore
-    TOKEN_ENDPOINT_AUTH_METHODS = [PrivateKeyJwtClientAssertion.CLIENT_AUTH_METHOD]
-
     def __init__(self, request: OAuth2Request, server: AuthorizationServer) -> None:
         super().__init__(request, server)
         # attributes set by grant extension as initializer arguments are fixed

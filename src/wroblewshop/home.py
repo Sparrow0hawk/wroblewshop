@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template
 
+from wroblewshop.auth import secure
+
 bp = Blueprint("home", __name__)
 
 
 @bp.get("")
-def home() -> str:
+@secure
+def index() -> str:
     return render_template("home.html")

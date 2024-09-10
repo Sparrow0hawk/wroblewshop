@@ -15,7 +15,6 @@ from tests.e2e.oidc_server.grants import (
     StubOpenIDCode,
     StubUserInfo,
 )
-from tests.e2e.oidc_server.jwts import PrivateKeyJwtClientAssertion
 from tests.e2e.oidc_server.resources import TypedResourceProtector
 from tests.e2e.oidc_server.tokens import (
     StubBearerTokenValidator,
@@ -188,11 +187,5 @@ def create_app(test_config: dict[str, Any] | None = None) -> OidcServerApp:
         # TODO: revoke token for id_token_hint
 
         return redirect(post_logout_redirect_uri)
-
-    # register after token endpoint has been defined
-    authorization_server.register_client_auth_method(
-        PrivateKeyJwtClientAssertion.CLIENT_AUTH_METHOD,
-        PrivateKeyJwtClientAssertion(app.url_for("token", _external=True)),
-    )
 
     return app

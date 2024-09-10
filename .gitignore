@@ -13,3 +13,6 @@ node_modules
 
 # mac
 .DS_Store
+
+# dotenv
+.env
