@@ -2,7 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /code
 
-COPY . /code
+COPY src ./src
+COPY pyproject.toml .
 RUN pip install .
 
 EXPOSE 5000
