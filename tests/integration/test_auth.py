@@ -48,3 +48,11 @@ class TestAuth:
 
         value = response.headers["Set-Cookie"].split("; ")
         assert value[0].startswith("session=") and "Secure" in value
+
+    def test_authorize_redirect_sets_http_only_session_cookie(
+        self, oidc_server: StubOidcServer, client: FlaskClient
+    ) -> None:
+        response = client.get("/home")
+
+        value = response.headers["Set-Cookie"].split("; ")
+        assert value[0].startswith("session=") and "HttpOnly" in value
