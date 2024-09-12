@@ -41,9 +41,7 @@ class TokenRepository:
 
 
 class StubBearerTokenValidator(BearerTokenValidator):  # type: ignore
-    def __init__(
-        self, tokens: TokenRepository, realm: str | None = None, **extra_attributes: Any
-    ) -> None:
+    def __init__(self, tokens: TokenRepository, realm: str | None = None, **extra_attributes: Any) -> None:
         super().__init__(realm, **extra_attributes)
         self._tokens = tokens
 

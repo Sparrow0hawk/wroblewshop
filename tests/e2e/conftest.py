@@ -29,9 +29,7 @@ def app_fixture(oidc_server: LiveServer) -> Generator[Flask, None, None]:
             "SECRET_KEY": b"secret-key",
             "GOOGLE_OAUTH_CLIENT_ID": client_id,
             "GOOGLE_OAUTH_CLIENT_SECRET": client_secret,
-            "GOOGLE_SERVER_METADATA_URL": oidc_server.app.url_for(
-                "openid_configuration", _external=True
-            ),
+            "GOOGLE_SERVER_METADATA_URL": oidc_server.app.url_for("openid_configuration", _external=True),
         }
     )
 
@@ -55,9 +53,7 @@ def oidc_server_app_fixture() -> OidcServerApp:
 
 
 @pytest.fixture(name="oidc_server", scope="package")
-def oidc_server_fixture(
-    oidc_server_app: OidcServerApp, request: FixtureRequest
-) -> Generator[LiveServer, Any, Any]:
+def oidc_server_fixture(oidc_server_app: OidcServerApp, request: FixtureRequest) -> Generator[LiveServer, Any, Any]:
     port = int(oidc_server_app.config["SERVER_NAME"].split(":")[1])
     server = LiveServer(oidc_server_app, "localhost", port, 5, True)
     server.start()
@@ -73,9 +69,7 @@ def oidc_client_fixture(oidc_server: LiveServer) -> Generator[OidcClient, Any, A
 
 
 @pytest.fixture(name="browser_context_args", scope="package")
-def browser_context_args_fixture(
-    browser_context_args: dict[str, str], live_server: LiveServer
-) -> dict[str, str]:
+def browser_context_args_fixture(browser_context_args: dict[str, str], live_server: LiveServer) -> dict[str, str]:
     browser_context_args["base_url"] = _get_url(live_server)
     return browser_context_args
 

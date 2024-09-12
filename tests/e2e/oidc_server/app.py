@@ -34,25 +34,17 @@ class OidcServerApp(Flask):
         self._tokens = TokenRepository()
 
     def create_authorization_server(self, key: Key) -> AuthorizationServer:
-        authorization_server = AuthorizationServer(
-            self, self._clients.get, self._save_token
-        )
+        authorization_server = AuthorizationServer(self, self._clients.get, self._save_token)
 
         issuer = self._get_base_url()
-        open_id_code = StubOpenIDCode(
-            issuer, key, self._authorization_codes, require_nonce=True
-        )
-        authorization_server.register_grant(
-            StubAuthorizationCodeGrant, [self._init_grant, open_id_code]
-        )
+        open_id_code = StubOpenIDCode(issuer, key, self._authorization_codes, require_nonce=True)
+        authorization_server.register_grant(StubAuthorizationCodeGrant, [self._init_grant, open_id_code])
 
         return authorization_server
 
     def create_resource_protector(self) -> TypedResourceProtector:
         resource_protector = TypedResourceProtector()
-        resource_protector.register_token_validator(
-            StubBearerTokenValidator(self._tokens)
-        )
+        resource_protector.register_token_validator(StubBearerTokenValidator(self._tokens))
         return resource_protector
 
     def add_user(self, user: StubUser) -> None:
@@ -72,11 +64,7 @@ class OidcServerApp(Flask):
         self._authorized_user_id = None
 
     def authorized_user(self) -> StubUser | None:
-        return (
-            None
-            if self._authorized_user_id is None
-            else self._users.get(self._authorized_user_id)
-        )
+        return None if self._authorized_user_id is None else self._users.get(self._authorized_user_id)
 
     def current_user(self) -> StubUser:
         user_id = current_token.user_id
@@ -159,9 +147,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> OidcServerApp:
         if authorized_user is None:
             return Response("<h1>Login</h1>")
 
-        response: Response = authorization_server.create_authorization_response(
-            grant_user=authorized_user
-        )
+        response: Response = authorization_server.create_authorization_response(grant_user=authorized_user)
         return response
 
     @app.post("/token")

@@ -11,7 +11,5 @@ class TypedResourceProtector(ResourceProtector):  # type: ignore
     def __call__(
         self, scopes: str | None = None, optional: bool = False
     ) -> Callable[[Callable[P, T]], Callable[P, T | Response]]:
-        decorator: Callable[[Callable[P, T]], Callable[P, T | Response]] = (
-            super().__call__(scopes, optional)
-        )
+        decorator: Callable[[Callable[P, T]], Callable[P, T | Response]] = super().__call__(scopes, optional)
         return decorator

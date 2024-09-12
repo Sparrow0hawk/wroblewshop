@@ -50,11 +50,7 @@ class AuthorizationCodeRepository:
 
     def get_by_nonce(self, client_id: str, nonce: str) -> StubAuthorizationCode | None:
         return next(
-            (
-                code
-                for code in self._codes.values()
-                if code.client_id == client_id and code.nonce == nonce
-            ),
+            (code for code in self._codes.values() if code.client_id == client_id and code.nonce == nonce),
             None,
         )
 
@@ -86,14 +82,10 @@ class StubAuthorizationCodeGrant(AuthorizationCodeGrant):  # type: ignore
             )
         )
 
-    def query_authorization_code(
-        self, code: str, client: StubClient
-    ) -> StubAuthorizationCode | None:
+    def query_authorization_code(self, code: str, client: StubClient) -> StubAuthorizationCode | None:
         return self.authorization_codes.get_by_code(client.client_id, code)
 
-    def delete_authorization_code(
-        self, authorization_code: StubAuthorizationCode
-    ) -> None:
+    def delete_authorization_code(self, authorization_code: StubAuthorizationCode) -> None:
         self.authorization_codes.delete(authorization_code)
 
     def authenticate_user(self, authorization_code: StubAuthorizationCode) -> StubUser:

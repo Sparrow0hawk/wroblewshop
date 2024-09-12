@@ -10,9 +10,7 @@ class StartPage:
         self._soup = BeautifulSoup(response.text, "html.parser")
         heading = self._soup.select_one("h2")
         assert heading
-        self.is_visible = (
-            heading.string == "Welcome to Wroblewshop" if heading.string else False
-        )
+        self.is_visible = heading.string == "Welcome to Wroblewshop" if heading.string else False
 
     @classmethod
     def open(cls, client: FlaskClient) -> StartPage:
