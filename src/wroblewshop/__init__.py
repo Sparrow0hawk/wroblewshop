@@ -10,6 +10,7 @@ from wroblewshop import auth, home, start
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     app = Flask(__name__)
+    app.config.from_object("wroblewshop.config.Config")
     app.config.from_prefixed_env()
 
     if test_config:
