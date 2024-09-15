@@ -17,7 +17,7 @@ def test_start_shows_heading(app: Flask, page: Page) -> None:
 
 
 @pytest.mark.usefixtures("live_server", "oidc_server")
-def test_start_shows_home(app: Flask, oidc_client: OidcClient, page: Page) -> None:
+def test_start_shows_home(app: Flask, page: Page, oidc_client: OidcClient) -> None:
     oidc_client.add_user(StubUser(id="shopper", email="shopper@gmail.com"))
     start_page = StartPage.open(page)
 
