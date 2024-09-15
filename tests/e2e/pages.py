@@ -40,6 +40,11 @@ class HomePage:
         cls.open(page)
         return LoginPage(page)
 
+    @classmethod
+    def open_when_unauthorized(cls, page: Page) -> ForbiddenPage:
+        cls.open(page)
+        return ForbiddenPage(page)
+
 
 class LoginPage:
     def __init__(self, page: Page):
@@ -48,3 +53,12 @@ class LoginPage:
     @property
     def is_visible(self) -> bool:
         return self._page.get_by_role("heading", name="Login", exact=True).is_visible()
+
+
+class ForbiddenPage:
+    def __init__(self, page: Page):
+        self._page = page
+
+    @property
+    def is_visible(self) -> bool:
+        return self._page.get_by_role("heading", name="Forbidden", exact=True).is_visible()

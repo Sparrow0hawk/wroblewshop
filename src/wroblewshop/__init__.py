@@ -5,7 +5,7 @@ from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from wroblewshop import auth, home, start
+from wroblewshop import api, auth, home, start
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
@@ -17,10 +17,13 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
         app.config.from_mapping(test_config)
 
     _configure_oidc(app)
+    _configure_users(app)
 
     app.register_blueprint(start.bp)
     app.register_blueprint(auth.bp, url_prefix="/auth")
     app.register_blueprint(home.bp, url_prefix="/home")
+    if app.testing:
+        app.register_blueprint(api.bp)
 
     app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 
@@ -38,3 +41,10 @@ def _configure_oidc(app: Flask) -> None:
             "scope": "openid email",
         },
     )
+
+
+def _configure_users(app: Flask) -> None:
+    app.extensions["users"] = []
+
+    if app.config.get("USERS"):
+        app.extensions["users"].extend(app.config["USERS"].split(","))

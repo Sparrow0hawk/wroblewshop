@@ -8,6 +8,7 @@ from flask import Flask
 from playwright.sync_api import BrowserContext
 from pytest_flask.live_server import LiveServer
 
+from tests.e2e.app_client import AppClient
 from tests.e2e.oidc_server.app import OidcServerApp
 from tests.e2e.oidc_server.app import create_app as oidc_server_create_app
 from tests.e2e.oidc_server.clients import StubClient
@@ -64,6 +65,13 @@ def oidc_server_fixture(oidc_server_app: OidcServerApp, request: FixtureRequest)
 @pytest.fixture(name="oidc_client")
 def oidc_client_fixture(oidc_server: LiveServer) -> Generator[OidcClient, Any, Any]:
     client = OidcClient(_get_url(oidc_server))
+    yield client
+    client.clear_users()
+
+
+@pytest.fixture(name="app_client")
+def app_client_fixture(live_server: LiveServer) -> Generator[AppClient, None, None]:
+    client = AppClient(_get_url(live_server))
     yield client
     client.clear_users()
 

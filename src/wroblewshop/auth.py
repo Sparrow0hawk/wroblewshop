@@ -2,7 +2,15 @@ from functools import wraps
 from typing import Callable, ParamSpec, TypeVar
 
 from authlib.integrations.flask_client import OAuth
-from flask import Blueprint, Response, current_app, redirect, session, url_for
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    redirect,
+    render_template,
+    session,
+    url_for,
+)
 from werkzeug import Response as BaseResponse
 
 bp = Blueprint("auth", __name__)
@@ -19,8 +27,19 @@ def callback() -> BaseResponse:
             "aud": {"value": oauth.google.client_id},
         }
     )
-    session["user"] = oauth.google.userinfo(token=token)
+    user = oauth.google.userinfo(token=token)
+
+    if user["email"] not in current_app.extensions["users"]:
+        return redirect(url_for("auth.forbidden"))
+
+    session["user"] = user
+
     return redirect(url_for("home.index"))
+
+
+@bp.get("/forbidden")
+def forbidden() -> Response:
+    return Response(render_template("forbidden.html"), status=403)
 
 
 @bp.get("/logout")
