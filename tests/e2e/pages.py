@@ -34,3 +34,17 @@ class HomePage:
     @property
     def is_visible(self) -> bool:
         return self._page.get_by_role("heading", name="Home", exact=True).is_visible()
+
+    @classmethod
+    def open_when_unauthenticated(cls, page: Page) -> LoginPage:
+        cls.open(page)
+        return LoginPage(page)
+
+
+class LoginPage:
+    def __init__(self, page: Page):
+        self._page = page
+
+    @property
+    def is_visible(self) -> bool:
+        return self._page.get_by_role("heading", name="Login", exact=True).is_visible()

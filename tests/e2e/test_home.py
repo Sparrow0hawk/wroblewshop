@@ -15,3 +15,10 @@ def test_home_shows_heading(app: Flask, page: Page, oidc_client: OidcClient) -> 
     home_page = HomePage.open(page)
 
     assert home_page.is_visible
+
+
+@pytest.mark.usefixtures("live_server", "oidc_server")
+def test_home_when_unauthenticated_shows_login(app: Flask, page: Page) -> None:
+    login_page = HomePage.open_when_unauthenticated(page)
+
+    assert login_page.is_visible
