@@ -39,6 +39,14 @@ class TestAuth:
 
         assert response.status_code == 302 and response.location == "/"
 
+    def test_logout_logs_out(self, client: FlaskClient) -> None:
+        with client.session_transaction() as setup_session:
+            setup_session["user"] = {"email": "shopper@gmail.com"}
+
+        with client:
+            client.get("/auth/logout")
+            assert "user" not in session
+
     def test_authorize_redirect_sets_secure_session_cookie(
         self, oidc_server: StubOidcServer, client: FlaskClient
     ) -> None:
