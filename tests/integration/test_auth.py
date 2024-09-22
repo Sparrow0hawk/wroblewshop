@@ -2,8 +2,7 @@ from typing import Generator
 
 import pytest
 from authlib.integrations.flask_client import OAuth
-from authlib.oidc.core import UserInfo
-from flask import current_app
+from flask import current_app, session
 from flask.testing import FlaskClient
 
 
@@ -32,10 +31,9 @@ class TestAuth:
         oauth.google.server_metadata["authorization_endpoint"] = "https://stub.example/authorize"
         return oidc_server
 
-    def test_logout_logs_out_from_oidc(self, client: FlaskClient) -> None:
+    def test_logout_shows_start(self, client: FlaskClient) -> None:
         with client.session_transaction() as setup_session:
-            setup_session["user"] = UserInfo({"email": "boardman@example.com"})
-            setup_session["id_token"] = "jwt"
+            setup_session["user"] = {"email": "shopper@gmail.com"}
 
         response = client.get("/auth/logout")
 
