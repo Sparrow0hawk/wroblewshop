@@ -15,7 +15,7 @@ class StartPage:
 
     @property
     def is_visible(self) -> bool:
-        return self._page.get_by_role("heading", name="Wroblewshop", exact=True).is_visible()
+        return self._page.get_by_role("heading", name="Welcome to Wroblewshop", exact=True).is_visible()
 
     def start(self) -> HomePage:
         self._button.click()
