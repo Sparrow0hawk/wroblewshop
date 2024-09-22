@@ -8,11 +8,18 @@
     <title>Wroblewshop</title>
 </head>
 <body>
-<header class="navbar bg-body-tertiary shadow-sm">
-    <div class="col-lg-6 mx-auto">
-        {% block header_title %}<h3><a class="app-brand" href="{{ url_for('start.index') }}">Wroblewshop</a></h3>{% endblock %}
-    </div>
-</header>
+{% block header %}
+    <header class="navbar bg-body-tertiary shadow-sm">
+        <div class="container">
+            {% block header_title %}<a class="navbar-brand app-brand" href="{{ url_for('start.index') }}">Wroblewshop</a>{% endblock %}
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+{% endblock %}
 <div class="col-lg-6 mx-auto p-3 py-md-3">
     <div class="row g-0 mb-4">
         {% block beforeContent %}{% endblock %}

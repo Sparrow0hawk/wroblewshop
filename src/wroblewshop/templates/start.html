@@ -1,5 +1,13 @@
 {% extends '_page-two-third-width.html' %}
 
+{% block header %}
+    <header class="navbar bg-body-tertiary shadow-sm">
+        <div class="container">
+            {% block header_title %}<a class="navbar-brand app-brand" href="{{ url_for('start.index') }}">Wroblewshop</a>{% endblock %}
+        </div>
+    </header>
+{% endblock %}
+
 {% block content %}
 <h2>Welcome to Wroblewshop</h2>
 <a class="btn btn-primary" href="{{ url_for('home.index') }}" role="button">Start</a>

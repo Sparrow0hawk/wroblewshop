@@ -31,6 +31,9 @@ class NavbarComponent:
 class HomePage:
     def __init__(self, response: TestResponse):
         self._soup = BeautifulSoup(response.text, "html.parser")
+        navbar = self._soup.select_one("header.navbar")
+        assert navbar
+        self.navbar = SignedInNavBarComponent(navbar)
         heading = self._soup.select_one("h2")
         assert heading
         self.is_visible = heading.string == "Home" if heading.string else False
@@ -39,3 +42,11 @@ class HomePage:
     def open(cls, client: FlaskClient) -> HomePage:
         response = client.get("/home")
         return HomePage(response)
+
+
+class SignedInNavBarComponent:
+    def __init__(self, navbar: Tag):
+        navbar_links = navbar.select("a")
+        assert navbar_links
+        sign_out_link = navbar_links[1]
+        self.sign_out = sign_out_link["href"]
