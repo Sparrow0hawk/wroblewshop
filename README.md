@@ -53,3 +53,17 @@ To build the project with Docker, complete [project setup](#setup) and run:
    ```bash
    docker run --env-file .env --rm -p 5000:5000 wroblewshop:latest
    ```
+
+## Docker compose
+
+To spin up an instance of the project and use a PostgreSQL database you can use Docker compose.
+
+1. Spin up services
+   ```bash
+   docker compose up --build
+   ```
+   You can stop running services with CTRL+C
+1. To destroy stopped services
+   ```bash
+   docker compose down
+   ```
