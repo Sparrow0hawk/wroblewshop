@@ -1,8 +1,10 @@
 from collections.abc import Mapping
 from typing import Any
 
+import flask_session
 from authlib.integrations.flask_client import OAuth
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop import api, auth, home, start
@@ -15,6 +17,9 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
 
     if test_config:
         app.config.from_mapping(test_config)
+
+    app.config["SESSION_SQLALCHEMY"] = SQLAlchemy(app)
+    flask_session.Session(app)
 
     _configure_oidc(app)
     _configure_users(app)
