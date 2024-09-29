@@ -2,6 +2,7 @@ from functools import wraps
 from typing import Callable, ParamSpec, TypeVar
 
 from authlib.integrations.flask_client import OAuth
+from authlib.oidc.core import UserInfo
 from flask import (
     Blueprint,
     Response,
@@ -12,6 +13,8 @@ from flask import (
     url_for,
 )
 from werkzeug import Response as BaseResponse
+
+from wroblewshop.domain.user import UserRepository
 
 bp = Blueprint("auth", __name__)
 
@@ -29,12 +32,18 @@ def callback() -> BaseResponse:
     )
     user = oauth.google.userinfo(token=token)
 
-    if user["email"] not in current_app.extensions["users"]:
+    if not _is_authorised(user):
         return redirect(url_for("auth.forbidden"))
 
     session["user"] = user
 
     return redirect(url_for("home.index"))
+
+
+# TODO: improve logic with database
+def _is_authorised(user: UserInfo) -> bool:
+    users: UserRepository = current_app.extensions["users"]
+    return users.get_by_email(user["email"]) is not None
 
 
 @bp.get("/forbidden")
