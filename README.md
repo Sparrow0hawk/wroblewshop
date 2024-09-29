@@ -67,3 +67,26 @@ To spin up an instance of the project and use a PostgreSQL database you can use 
    ```bash
    docker compose down
    ```
+
+## Fly.io
+
+1. Create fly postgres machine. Use development setting and let it go to sleep. 
+```bash
+fly postgres create --name wroblewshop-pg
+```
+
+1. Attach the container machine to main wroblewshop machine. Note this will set DATABASE_URL secret.
+```bash
+fly postgres attach wroblewshop-pg --app wroblewshop
+```
+
+1. Set database URI secret for Flask.
+```bash
+fly secrets set FLASK_SQLALCHEMY_DATABASE_URI=postgresql+psycopg://wroblewshop:password@wroblewshop-pg.flycast:5432/wroblewshop
+```
+
+1. Create psql session in database.
+
+```bash
+fly postgres connect --app wroblewshop-pg --database wroblewshop
+```
