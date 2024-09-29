@@ -7,11 +7,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from wroblewshop import api, auth, home, start
+from wroblewshop.views import api, auth, home, start
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="views/static", template_folder="views/templates")
     app.config.from_object("wroblewshop.config.Config")
     app.config.from_prefixed_env()
 

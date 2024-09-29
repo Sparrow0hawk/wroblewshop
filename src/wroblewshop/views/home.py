@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-from wroblewshop.auth import secure
+from wroblewshop.views.auth import secure
 
 bp = Blueprint("home", __name__)
 

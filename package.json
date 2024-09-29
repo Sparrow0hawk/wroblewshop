@@ -8,10 +8,10 @@
   },
   "scripts": {
     "build": "npm run copy-css && npm run copy-bootstrap",
-    "copy-css": "cp src/wroblewshop/assets/app.css src/wroblewshop/static/app.css",
+    "copy-css": "cp src/wroblewshop/views/assets/app.css src/wroblewshop/views/static/app.css",
     "copy-bootstrap": "npm run copy-bootstrap-css && npm run copy-bootstrap-js",
-    "copy-bootstrap-js": "cp -r node_modules/bootstrap/dist/js src/wroblewshop/static/",
-    "copy-bootstrap-css": "cp -r node_modules/bootstrap/dist/css/bootstrap.min.css src/wroblewshop/static/"
+    "copy-bootstrap-js": "cp -r node_modules/bootstrap/dist/js src/wroblewshop/views/static/",
+    "copy-bootstrap-css": "cp -r node_modules/bootstrap/dist/css/bootstrap.min.css src/wroblewshop/views/static/"
   },
   "author": "Alex Coleman",
   "license": "MIT",
