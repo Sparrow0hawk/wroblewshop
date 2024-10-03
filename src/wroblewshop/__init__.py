@@ -2,12 +2,14 @@ from collections.abc import Mapping
 from typing import Any
 
 import flask_session
+import inject
 from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from inject import Binder
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from wroblewshop.domain.user import User
+from wroblewshop.domain.user import User, UserRepository
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
@@ -19,6 +21,8 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
 
     if test_config:
         app.config.from_mapping(test_config)
+
+    inject.configure(_bindings, bind_in_runtime=False)
 
     app.config["SESSION_SQLALCHEMY"] = SQLAlchemy(app)
     flask_session.Session(app)
@@ -37,6 +41,10 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     return app
 
 
+def _bindings(binder: Binder) -> None:
+    binder.bind_to_constructor(UserRepository, DatabaseUserRepository)
+
+
 def _configure_oidc(app: Flask) -> None:
     oauth = OAuth(app)
     oauth.register(
@@ -50,10 +58,7 @@ def _configure_oidc(app: Flask) -> None:
     )
 
 
-def _configure_users(app: Flask) -> None:
-    users = DatabaseUserRepository()
-
+@inject.autoparams("users")
+def _configure_users(app: Flask, users: UserRepository) -> None:
     if app.config.get("USERS"):
         users.add(*[User(email=email) for email in app.config["USERS"].split(",")])
-
-    app.extensions["users"] = users

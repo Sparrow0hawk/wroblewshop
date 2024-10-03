@@ -2,6 +2,7 @@ import os
 import socket
 from typing import Any, Generator
 
+import inject
 import pytest
 from _pytest.fixtures import FixtureRequest
 from flask import Flask
@@ -43,6 +44,7 @@ def app_fixture(oidc_server: LiveServer) -> Generator[Flask, None, None]:
     oidc_client = OidcClient(_get_url(oidc_server))
     oidc_client.add_client(app_oidc_client)
     yield app
+    inject.clear()
     oidc_client.clear_clients()
 
 

@@ -1,6 +1,7 @@
 from functools import wraps
 from typing import Callable, ParamSpec, TypeVar
 
+import inject
 from authlib.integrations.flask_client import OAuth
 from authlib.oidc.core import UserInfo
 from flask import (
@@ -20,7 +21,8 @@ bp = Blueprint("auth", __name__)
 
 
 @bp.get("")
-def callback() -> BaseResponse:
+@inject.autoparams()
+def callback(users: UserRepository) -> BaseResponse:
     oauth = _get_oauth()
     # TODO: flask test for checking iss and aud
     server_metadata = oauth.google.load_server_metadata()
@@ -32,7 +34,7 @@ def callback() -> BaseResponse:
     )
     user = oauth.google.userinfo(token=token)
 
-    if not _is_authorised(user):
+    if not _is_authorised(user, users):
         return redirect(url_for("auth.forbidden"))
 
     session["user"] = user
@@ -40,9 +42,7 @@ def callback() -> BaseResponse:
     return redirect(url_for("home.index"))
 
 
-# TODO: improve logic with database
-def _is_authorised(user: UserInfo) -> bool:
-    users: UserRepository = current_app.extensions["users"]
+def _is_authorised(user: UserInfo, users: UserRepository) -> bool:
     return users.get_by_email(user["email"]) is not None
 
 

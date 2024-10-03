@@ -1,8 +1,7 @@
 from wroblewshop.domain.user import User, UserRepository
 
 
-# TODO: actually use a database
-class DatabaseUserRepository(UserRepository):
+class InMemoryUserRepository(UserRepository):
     def __init__(self) -> None:
         self._users: list[User] = []
 
@@ -12,6 +11,9 @@ class DatabaseUserRepository(UserRepository):
 
     def get_by_email(self, email: str) -> User | None:
         return next((user for user in self._users if user.email == email), None)
+
+    def get_all(self) -> list[User]:
+        return [user for user in self._users]
 
     def clear(self) -> None:
         self._users.clear()

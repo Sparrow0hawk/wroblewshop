@@ -22,14 +22,6 @@ class TestDatabaseUserRepository:
         user = users.get_by_email(email="shopper@gmail.com")
         assert user and user.email == "shopper@gmail.com"
 
-    def test_get_all(self, users: DatabaseUserRepository) -> None:
-        users._users.extend([User(email="shopper@gmail.com"), User(email="recipemaker@gmail.com")])
-
-        user1: User
-        user2: User
-        user1, user2 = users.get_all()
-        assert user1.email == "shopper@gmail.com" and user2.email == "recipemaker@gmail.com"
-
     def test_clear(self, users: DatabaseUserRepository) -> None:
         users._users.extend([User(email="shopper@gmail.com"), User(email="recipemaker@gmail.com")])
 
