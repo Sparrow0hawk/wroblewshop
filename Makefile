@@ -8,7 +8,7 @@ lint: ruff mypy
 ruff:
 	$(bin)/ruff check src tests
 
-ruff-fix:
+fix:
 	$(bin)/ruff check --fix src tests
 
 format: black isort
