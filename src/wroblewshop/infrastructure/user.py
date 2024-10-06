@@ -1,17 +1,29 @@
+import inject
+from sqlalchemy import Engine, delete, select
+from sqlalchemy.orm import Session
+
 from wroblewshop.domain.user import User, UserRepository
+from wroblewshop.infrastructure import UserEntity
 
 
-# TODO: actually use a database
 class DatabaseUserRepository(UserRepository):
-    def __init__(self) -> None:
-        self._users: list[User] = []
+    @inject.autoparams()
+    def __init__(self, engine: Engine):
+        self._engine = engine
 
     def add(self, *users: User) -> None:
-        for user in users:
-            self._users.append(user)
+        with Session(self._engine) as session:
+            for user in users:
+                session.add(UserEntity(email=user.email))
+            session.commit()
 
     def get_by_email(self, email: str) -> User | None:
-        return next((user for user in self._users if user.email == email), None)
+        with Session(self._engine) as session:
+            result = session.scalars(select(UserEntity).where(UserEntity.email == email))
+            row = result.one_or_none()
+            return User(email=row.email) if row else None
 
     def clear(self) -> None:
-        self._users.clear()
+        with Session(self._engine) as session:
+            session.execute(delete(UserEntity))
+            session.commit()

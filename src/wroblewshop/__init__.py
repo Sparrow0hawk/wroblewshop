@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Callable
 
 import flask_session
 import inject
@@ -7,9 +7,11 @@ from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from inject import Binder
+from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.domain.user import User, UserRepository
+from wroblewshop.infrastructure import Base
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
@@ -22,10 +24,12 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     if test_config:
         app.config.from_mapping(test_config)
 
-    inject.configure(_bindings, bind_in_runtime=False)
+    inject.configure(bindings(app), bind_in_runtime=False)
 
     app.config["SESSION_SQLALCHEMY"] = SQLAlchemy(app)
     flask_session.Session(app)
+
+    _create_database()
 
     _configure_oidc(app)
     _configure_users(app)
@@ -41,8 +45,26 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     return app
 
 
-def _bindings(binder: Binder) -> None:
-    binder.bind_to_constructor(UserRepository, DatabaseUserRepository)
+def bindings(app: Flask) -> Callable[[Binder], None]:
+    def _bindings(binder: Binder) -> None:
+        binder.bind(Flask, app)
+        binder.bind_to_constructor(Engine, _create_engine)
+        binder.bind_to_constructor(UserRepository, DatabaseUserRepository)
+
+    return _bindings
+
+
+@inject.autoparams()
+def _create_engine(app: Flask) -> Engine:
+    flask_sqlalchemy_extension: SQLAlchemy = app.extensions["sqlalchemy"]
+    with app.app_context():
+        engine = flask_sqlalchemy_extension.engine
+    return engine
+
+
+@inject.autoparams()
+def _create_database(engine: Engine) -> None:
+    Base.metadata.create_all(engine)
 
 
 def _configure_oidc(app: Flask) -> None:
