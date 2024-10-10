@@ -1,8 +1,10 @@
 from collections.abc import Mapping
 from typing import Any, Callable
 
+import alembic.config
 import flask_session
 import inject
+from alembic import command
 from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -11,7 +13,6 @@ from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.domain.user import User, UserRepository
-from wroblewshop.infrastructure import Base
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
@@ -64,7 +65,13 @@ def _create_engine(app: Flask) -> Engine:
 
 @inject.autoparams()
 def _create_database(engine: Engine) -> None:
-    Base.metadata.create_all(engine)
+    alembic_config = alembic.config.Config()
+
+    alembic_config.set_main_option("script_location", "wroblewshop:infrastructure:migrations")
+
+    with engine.connect() as connection:
+        alembic_config.attributes["connection"] = connection
+        command.upgrade(alembic_config, "head")
 
 
 def _configure_oidc(app: Flask) -> None:
