@@ -1,0 +1,25 @@
+{% extends '_page-two-third-width.html' %}
+
+{% block content %}
+<h2>Welcome to Wrobleshop</h2>
+
+<p>Select meals for the week to add to your list:</p>
+<form>
+    <div class="row pb-3">
+        <div class="col-sm">
+            <div class="form-check">
+                <label for="meal-1" class="card-title">Halloumi Rice</label>
+                <input class="form-check-input" id="meal-1" type="checkbox">
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-check">
+                <label for="meal-2" class="card-title">Pasta bake</label>
+                <input class="form-check-input" id="meal-2" type="checkbox">
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary" href="add-meal.html">Add new meal</a>
+    <a class="btn btn-success" href="check-store.html">Continue</a>
+</form>
+{% endblock %}
