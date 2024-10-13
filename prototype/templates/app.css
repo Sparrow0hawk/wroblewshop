@@ -7,6 +7,11 @@
     text-decoration: underline;
 }
 
+.column-two-thirds {
+    width: 66%;
+    float: left;
+}
+
 .actions-list {
     text-align: center;
 }
