@@ -33,6 +33,9 @@ mypy:
 test:
 	$(bin)/pytest
 
+run:
+	flask --app src/wroblewshop run
+
 prototype: prototype-build
 	$(bin)/python -m http.server 8081 -d prototype/_site
 
