@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from flask.testing import FlaskClient
 
 from tests.integration.pages import HomePage

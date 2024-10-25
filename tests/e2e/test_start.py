@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 from flask import Flask
 from playwright.sync_api import Page
