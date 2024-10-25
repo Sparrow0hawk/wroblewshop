@@ -1,11 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 import requests
-
-
-@dataclass
-class UserRepr:
-    email: str
 
 
 class AppClient:
@@ -19,3 +16,8 @@ class AppClient:
     def clear_users(self) -> None:
         response = requests.delete(f"{self.url}/user")
         response.raise_for_status()
+
+
+@dataclass
+class UserRepr:
+    email: str
