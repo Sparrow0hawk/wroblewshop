@@ -37,6 +37,9 @@ class HomePage:
         heading = self._soup.select_one("h2")
         assert heading
         self.heading = heading.string if heading.string else False
+        actions_list = self._soup.select_one("main ul")
+        assert actions_list
+        self.items = ActionsListComponent(actions_list)
 
     @classmethod
     def open(cls, client: FlaskClient) -> HomePage:
@@ -50,3 +53,23 @@ class SignedInNavBarComponent:
         assert navbar_links
         sign_out_link = navbar_links[1]
         self.sign_out = sign_out_link["href"]
+
+
+class ActionsListComponent:
+    def __init__(self, actions_list: Tag):
+        add_item_link = actions_list.select_one("a")
+        assert add_item_link
+        self.add_item = add_item_link["href"]
+
+
+class AddItemPage:
+    def __init__(self, response: TestResponse):
+        self._soup = BeautifulSoup(response.text, "html.parser")
+        heading = self._soup.select_one("h2")
+        assert heading
+        self.is_visible = heading.string == "Add item" if heading.string else False
+
+    @classmethod
+    def open(cls, client: FlaskClient) -> AddItemPage:
+        response = client.get("/add-item")
+        return AddItemPage(response)

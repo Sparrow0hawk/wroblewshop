@@ -11,3 +11,34 @@
     width: 66%;
     float: left;
 }
+
+.actions-list {
+    text-align: center;
+}
+
+.actions-list ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 15em);
+    justify-content: center;
+    gap: 1em;
+}
+
+.actions-list li {
+    list-style: none;
+}
+
+.actions-list li a {
+    display: block;
+    background-color: #0b5ed7;
+    color: white;
+    padding: 2em;
+    margin: .5em;
+    text-decoration: none;
+    border-radius: 2em .5em;
+    box-shadow: 4px 4px 0 0 #3dd5f3;
+}
+
+.actions-list li a:hover {
+    background-color: #0a58ca;
+    transform: scale(1.03)
+}

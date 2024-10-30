@@ -2,4 +2,13 @@
 
 {% block content %}
 <h2>{{ cupboard_name }} Cupboard</h2>
+<p>Select an action to start:</p>
+<section class="actions-list">
+    <ul>
+        <li>
+            <a href="{{ url_for('add_item.index') }}">Add item</a>
+        </li>
+    </ul>
+
+</section>
 {% endblock %}

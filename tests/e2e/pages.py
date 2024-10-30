@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from playwright.sync_api import Page
+from playwright.sync_api import Locator, Page
 
 
 class StartPage:
@@ -26,6 +26,8 @@ class HomePage:
     def __init__(self, page: Page):
         self._page = page
         self._heading = page.get_by_role("heading")
+        self._main = page.get_by_role("main")
+        self.actions = ActionsListComponent(self._main.get_by_role("list"))
 
     @classmethod
     def open(cls, page: Page) -> HomePage:
@@ -47,6 +49,15 @@ class HomePage:
         return ForbiddenPage(page)
 
 
+class ActionsListComponent:
+    def __init__(self, actions_list: Locator):
+        self.actions_list = actions_list
+
+    def add_item(self) -> AddItemPage:
+        self.actions_list.get_by_role("link", name="Add item").click()
+        return AddItemPage(self.actions_list.page)
+
+
 class LoginPage:
     def __init__(self, page: Page):
         self._page = page
@@ -63,3 +74,12 @@ class ForbiddenPage:
     @property
     def is_visible(self) -> bool:
         return self._page.get_by_role("heading", name="Forbidden", exact=True).is_visible()
+
+
+class AddItemPage:
+    def __init__(self, page: Page):
+        self._page = page
+
+    @property
+    def is_visible(self) -> bool:
+        return self._page.get_by_role("heading", name="Add item", exact=True).is_visible()
