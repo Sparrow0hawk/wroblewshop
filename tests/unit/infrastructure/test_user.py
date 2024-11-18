@@ -20,7 +20,7 @@ class TestDatabaseUserRepository:
         return repository
 
     def test_add(self, engine: Engine, users: DatabaseUserRepository) -> None:
-        users.add(User(email="shopper@gmail.com"), User("recipemaker@gmail.com"))
+        users.add(User(email="shopper@gmail.com"), User(email="recipemaker@gmail.com"))
 
         user1: UserEntity
         user2: UserEntity
