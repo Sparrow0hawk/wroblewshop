@@ -1,3 +1,4 @@
+import os
 from collections.abc import Mapping
 from typing import Any, Callable
 
@@ -12,14 +13,17 @@ from inject import Binder
 from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from wroblewshop.config import LocalConfig
 from wroblewshop.domain.user import User, UserRepository
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
+    env = os.getenv("FLASK_ENV", LocalConfig.NAME)
+
     app = Flask(__name__, static_folder="views/static", template_folder="views/templates")
-    app.config.from_object("wroblewshop.config.Config")
+    app.config.from_object(f"wroblewshop.config.{env.title()}Config")
     app.config.from_prefixed_env()
 
     if test_config:
@@ -33,7 +37,6 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     _create_database()
 
     _configure_oidc(app)
-    _configure_users(app)
 
     app.register_blueprint(start.bp)
     app.register_blueprint(auth.bp, url_prefix="/auth")
@@ -85,9 +88,3 @@ def _configure_oidc(app: Flask) -> None:
             "scope": "openid email",
         },
     )
-
-
-@inject.autoparams("users")
-def _configure_users(app: Flask, users: UserRepository) -> None:
-    if app.config.get("USERS"):
-        users.add(*[User(email=email) for email in app.config["USERS"].split(",")])
