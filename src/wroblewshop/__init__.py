@@ -14,7 +14,7 @@ from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.config import LocalConfig
-from wroblewshop.domain.user import User, UserRepository
+from wroblewshop.domain.user import UserRepository
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
