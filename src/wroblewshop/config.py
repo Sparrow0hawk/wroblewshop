@@ -13,10 +13,12 @@ class Config:
     GOOGLE_OAUTH_CLIENT_ID = "854325940723-clpnbi3kjqm1khs759hb1lt7ls8ve84g.apps.googleusercontent.com"
     GOOGLE_SERVER_METADATA_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
+
 class LocalConfig(Config):
     NAME = "local"
 
     TESTING = True
+
 
 class FlyConfig(Config):
     pass
