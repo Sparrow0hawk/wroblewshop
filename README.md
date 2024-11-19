@@ -70,6 +70,11 @@ To spin up an instance of the project and use a PostgreSQL database you can use 
 
 ## Fly.io
 
+1. Launch new Fly.io app using fly.toml
+   ```bash
+   fly launch
+   ```
+
 1. Create fly postgres machine. Use development setting and let it go to sleep. 
 ```bash
 fly postgres create --name wroblewshop-pg
