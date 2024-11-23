@@ -32,6 +32,20 @@ def client_fixture(app: Flask) -> FlaskClient:
     return app.test_client()
 
 
+@pytest.fixture(name="users")
+def user_repository_fixture() -> Generator[UserRepository, None, None]:
+    users = inject.instance(UserRepository)
+    yield users
+    users.clear()
+
+
+@pytest.fixture(name="cupboards")
+def cupboards_repository_fixture() -> Generator[CupboardRepository, None, None]:
+    cupboards = inject.instance(CupboardRepository)
+    yield cupboards
+    cupboards.clear()
+
+
 def _test_bindings(binder: inject.Binder) -> None:
     binder.bind_to_constructor(UserRepository, InMemoryUserRepository)
     binder.bind_to_constructor(CupboardRepository, InMemoryCupboardRepository)
