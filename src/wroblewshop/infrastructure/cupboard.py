@@ -20,7 +20,7 @@ class DatabaseCupboardRepository(CupboardRepository):
 
     def get(self, name: str) -> Cupboard | None:
         with Session(self._engine) as session:
-            result = session.scalars(select(CupboardEntity).where(CupboardEntity.name.is_(name)))
+            result = session.scalars(select(CupboardEntity).where(CupboardEntity.name == name))
             row = result.one_or_none()
             return Cupboard(id_=row.id, name=row.name) if row else None
 

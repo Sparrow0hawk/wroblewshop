@@ -14,7 +14,7 @@ class DatabaseUserRepository(UserRepository):
     def add(self, *users: User) -> None:
         with Session(self._engine) as session:
             for user in users:
-                cupboard = session.scalars(select(CupboardEntity).where(CupboardEntity.name.is_(user.cupboard))).one()
+                cupboard = session.scalars(select(CupboardEntity).where(CupboardEntity.name == user.cupboard)).one()
                 session.add(UserEntity(email=user.email, cupboard_id=cupboard.id))
             session.commit()
 
