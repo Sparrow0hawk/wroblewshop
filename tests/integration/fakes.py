@@ -1,3 +1,4 @@
+from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
 from wroblewshop.domain.user import User, UserRepository
 
 
@@ -17,3 +18,21 @@ class InMemoryUserRepository(UserRepository):
 
     def clear(self) -> None:
         self._users.clear()
+
+
+class InMemoryCupboardRepository(CupboardRepository):
+    def __init__(self) -> None:
+        self._cupboards: dict[int, Cupboard] = {}
+
+    def add(self, cupboard: Cupboard) -> None:
+        self._cupboards[cupboard.id] = cupboard
+
+    def get(self, name: str) -> Cupboard | None:
+        cupboard_by_name = (cupboard for cupboard in self._cupboards.values() if cupboard.name == name)
+        return next(cupboard_by_name, None)
+
+    def get_all(self) -> list[Cupboard]:
+        return [cupboard for cupboard in self._cupboards.values()]
+
+    def clear(self) -> None:
+        self._cupboards.clear()

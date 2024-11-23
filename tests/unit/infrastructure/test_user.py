@@ -1,9 +1,9 @@
 import pytest
 from sqlalchemy import Engine, create_engine, func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from wroblewshop.domain.user import User
-from wroblewshop.infrastructure import Base, UserEntity
+from wroblewshop.infrastructure import Base, CupboardEntity, UserEntity
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 
 
@@ -20,27 +20,41 @@ class TestDatabaseUserRepository:
         return repository
 
     def test_add(self, engine: Engine, users: DatabaseUserRepository) -> None:
-        users.add(User(email="shopper@gmail.com"), User(email="recipemaker@gmail.com"))
+        with Session(engine) as session:
+            session.add(CupboardEntity(id=1, name="Palace"))
+            session.commit()
+
+        users.add(
+            User(email="shopper@gmail.com", cupboard="Palace"), User(email="recipemaker@gmail.com", cupboard="Palace")
+        )
 
         user1: UserEntity
         user2: UserEntity
         with Session(engine) as session:
-            user1, user2 = session.scalars(select(UserEntity))
+            user1, user2 = session.scalars(select(UserEntity).options(selectinload("*")))
 
-        assert user1.email == "shopper@gmail.com" and user2.email == "recipemaker@gmail.com"
+        assert (
+            user1.email == "shopper@gmail.com"
+            and user1.cupboard_id == 1
+            and user2.email == "recipemaker@gmail.com"
+            and user2.cupboard_id == 1
+        )
 
     def test_get_by_email(self, engine: Engine, users: DatabaseUserRepository) -> None:
         with Session(engine) as session:
-            session.add(UserEntity(email="shopper@gmail.com"))
+            session.add(CupboardEntity(id=1, name="Palace"))
+            session.add(UserEntity(email="shopper@gmail.com", cupboard_id=1))
             session.commit()
 
         user = users.get_by_email(email="shopper@gmail.com")
-        assert user and user.email == "shopper@gmail.com"
+
+        assert user and user.email == "shopper@gmail.com" and user.cupboard == "Palace"
 
     def test_clear(self, engine: Engine, users: DatabaseUserRepository) -> None:
         with Session(engine) as session:
-            session.add(UserEntity(email="shopper@gmail.com"))
-            session.add(UserEntity(email="recipemaker@gmail.com"))
+            session.add(CupboardEntity(id=1, name="Palace"))
+            session.add(UserEntity(email="shopper@gmail.com", cupboard_id=1))
+            session.add(UserEntity(email="recipemaker@gmail.com", cupboard_id=1))
             session.commit()
 
         users.clear()

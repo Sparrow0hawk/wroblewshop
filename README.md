@@ -26,11 +26,17 @@ To run this repository you will need:
    ```bash
     flask --app wroblewshop run
    ```
+1. Load a cupboard using cURL
+   ```bash
+   curl -X POST http://127.0.0.1:5000/cupboard \
+        -H "Content-type: application/json" \
+        -d '{"id": 1, "name": "My cupboard"}'
+   ```
 1. Load a user using cURL
    ```bash
    curl -X POST http://127.0.0.1:5000/user \
         -H "Content-type: application/json" \
-        -d '{"email": "USER@gmail.com"}'
+        -d '{"email": "USER@gmail.com", "cupboard": "My cupboard"}'
    ```
    
 ## Prototype

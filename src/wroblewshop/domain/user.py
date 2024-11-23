@@ -1,6 +1,7 @@
 class User:
-    def __init__(self, email: str):
+    def __init__(self, email: str, cupboard: str):
         self.email = email
+        self.cupboard = cupboard
 
 
 class UserRepository:

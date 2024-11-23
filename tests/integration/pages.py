@@ -36,7 +36,7 @@ class HomePage:
         self.navbar = SignedInNavBarComponent(navbar)
         heading = self._soup.select_one("h2")
         assert heading
-        self.is_visible = heading.string == "Home" if heading.string else False
+        self.heading = heading.string if heading.string else False
 
     @classmethod
     def open(cls, client: FlaskClient) -> HomePage:

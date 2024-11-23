@@ -25,6 +25,7 @@ class StartPage:
 class HomePage:
     def __init__(self, page: Page):
         self._page = page
+        self._heading = page.get_by_role("heading")
 
     @classmethod
     def open(cls, page: Page) -> HomePage:
@@ -32,8 +33,8 @@ class HomePage:
         return cls(page)
 
     @property
-    def is_visible(self) -> bool:
-        return self._page.get_by_role("heading", name="Home", exact=True).is_visible()
+    def heading(self) -> str | None:
+        return self._heading.text_content()
 
     @classmethod
     def open_when_unauthenticated(cls, page: Page) -> LoginPage:

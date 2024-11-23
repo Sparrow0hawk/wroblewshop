@@ -75,6 +75,7 @@ def oidc_client_fixture(oidc_server: LiveServer) -> Generator[OidcClient, Any, A
 def app_client_fixture(live_server: LiveServer) -> Generator[AppClient, None, None]:
     client = AppClient(_get_url(live_server))
     yield client
+    client.clear_cupboards()
     client.clear_users()
 
 

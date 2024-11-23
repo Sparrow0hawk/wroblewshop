@@ -14,7 +14,9 @@ from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.config import LocalConfig
+from wroblewshop.domain.cupboard import CupboardRepository
 from wroblewshop.domain.user import UserRepository
+from wroblewshop.infrastructure.cupboard import DatabaseCupboardRepository
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 from wroblewshop.views import api, auth, home, start
 
@@ -54,6 +56,7 @@ def bindings(app: Flask) -> Callable[[Binder], None]:
         binder.bind(Flask, app)
         binder.bind_to_constructor(Engine, _create_engine)
         binder.bind_to_constructor(UserRepository, DatabaseUserRepository)
+        binder.bind_to_constructor(CupboardRepository, DatabaseCupboardRepository)
 
     return _bindings
 

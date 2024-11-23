@@ -5,8 +5,9 @@ import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 
-from tests.integration.fakes import InMemoryUserRepository
+from tests.integration.fakes import InMemoryCupboardRepository, InMemoryUserRepository
 from wroblewshop import create_app
+from wroblewshop.domain.cupboard import CupboardRepository
 from wroblewshop.domain.user import UserRepository
 
 
@@ -33,3 +34,4 @@ def client_fixture(app: Flask) -> FlaskClient:
 
 def _test_bindings(binder: inject.Binder) -> None:
     binder.bind_to_constructor(UserRepository, InMemoryUserRepository)
+    binder.bind_to_constructor(CupboardRepository, InMemoryCupboardRepository)
