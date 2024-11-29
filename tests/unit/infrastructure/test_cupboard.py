@@ -35,7 +35,7 @@ class TestDatabaseUserRepository:
             session.add(CupboardEntity(id=1, name="Palace"))
             session.commit()
 
-        cupboard = cupboards.get("Palace")
+        cupboard = cupboards.get_by_name("Palace")
 
         assert cupboard and cupboard.id == 1 and cupboard.name == "Palace"
 

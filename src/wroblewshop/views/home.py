@@ -19,7 +19,7 @@ def index(cupboards: CupboardRepository, users: UserRepository) -> str:
     user_info = session["user"]
     user = users.get_by_email(user_info["email"])
     assert user
-    cupboard = cupboards.get(user.cupboard)
+    cupboard = cupboards.get_by_name(user.cupboard)
     assert cupboard
 
     context = HomeContext.from_domain(cupboard)

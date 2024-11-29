@@ -18,7 +18,7 @@ class DatabaseCupboardRepository(CupboardRepository):
                 session.add(cupboard_entity)
             session.commit()
 
-    def get(self, name: str) -> Cupboard | None:
+    def get_by_name(self, name: str) -> Cupboard | None:
         with Session(self._engine) as session:
             result = session.scalars(select(CupboardEntity).where(CupboardEntity.name == name))
             row = result.one_or_none()

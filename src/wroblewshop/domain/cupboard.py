@@ -8,7 +8,7 @@ class CupboardRepository:
     def add(self, cupboard: Cupboard) -> None:
         raise NotImplementedError()
 
-    def get(self, name: str) -> Cupboard | None:
+    def get_by_name(self, name: str) -> Cupboard | None:
         raise NotImplementedError()
 
     def get_all(self) -> list[Cupboard]:
