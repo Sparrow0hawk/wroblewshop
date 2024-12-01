@@ -7,7 +7,7 @@ from wroblewshop.infrastructure import Base, CupboardEntity
 from wroblewshop.infrastructure.cupboard import DatabaseCupboardRepository
 
 
-class TestDatabaseUserRepository:
+class TestDatabaseCupboardRepository:
     @pytest.fixture(name="engine")
     def engine_fixture(self) -> Engine:
         engine = create_engine("sqlite+pysqlite:///:memory:")
@@ -30,7 +30,7 @@ class TestDatabaseUserRepository:
 
         assert cupboard_entity.id == 1 and cupboard_entity.name == "Palace"
 
-    def test_get(self, engine: Engine, cupboards: DatabaseCupboardRepository) -> None:
+    def test_get_by_name(self, engine: Engine, cupboards: DatabaseCupboardRepository) -> None:
         with Session(engine) as session:
             session.add(CupboardEntity(id=1, name="Palace"))
             session.commit()
