@@ -1,19 +1,13 @@
 import pytest
-from sqlalchemy import Engine, create_engine, func, select
+from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session, selectinload
 
 from wroblewshop.domain.user import User
-from wroblewshop.infrastructure import Base, CupboardEntity, UserEntity
+from wroblewshop.infrastructure import CupboardEntity, UserEntity
 from wroblewshop.infrastructure.user import DatabaseUserRepository
 
 
 class TestDatabaseUserRepository:
-    @pytest.fixture(name="engine")
-    def engine_fixture(self) -> Engine:
-        engine = create_engine("sqlite+pysqlite:///:memory:")
-        Base.metadata.create_all(engine)
-        return engine
-
     @pytest.fixture(name="users")
     def users_fixture(self, engine: Engine) -> DatabaseUserRepository:
         repository: DatabaseUserRepository = DatabaseUserRepository(engine=engine)

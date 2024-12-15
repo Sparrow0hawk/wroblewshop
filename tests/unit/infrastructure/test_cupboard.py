@@ -1,19 +1,13 @@
 import pytest
-from sqlalchemy import Engine, create_engine, func, select
+from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
 from wroblewshop.domain.cupboard import Cupboard
-from wroblewshop.infrastructure import Base, CupboardEntity
+from wroblewshop.infrastructure import CupboardEntity
 from wroblewshop.infrastructure.cupboard import DatabaseCupboardRepository
 
 
 class TestDatabaseCupboardRepository:
-    @pytest.fixture(name="engine")
-    def engine_fixture(self) -> Engine:
-        engine = create_engine("sqlite+pysqlite:///:memory:")
-        Base.metadata.create_all(engine)
-        return engine
-
     @pytest.fixture(name="cupboards")
     def cupboards_fixture(self, engine: Engine) -> DatabaseCupboardRepository:
         repository: DatabaseCupboardRepository = DatabaseCupboardRepository(engine=engine)
