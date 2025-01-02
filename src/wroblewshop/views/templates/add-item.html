@@ -4,9 +4,10 @@
 <h2>Add item</h2>
 
 <form method="post" action="/add-item" aria-label="add-item">
+    {{ form.csrf_token }}
     <fieldset class="form-group mb-3">
-        <label class="form-label" for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name">
+        {{ form.name.label(class_="form-label") }}
+        {{ form.name(class_="form-control") }}
     </fieldset>
     <input class="btn btn-success" type="submit" value="Confirm" role="button">
 </form>

@@ -9,6 +9,7 @@ from alembic import command
 from authlib.integrations.flask_client import OAuth
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 from inject import Binder
 from sqlalchemy import Engine
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -35,6 +36,7 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
 
     app.config["SESSION_SQLALCHEMY"] = SQLAlchemy(app)
     flask_session.Session(app)
+    csrf = CSRFProtect(app)
 
     _create_database()
 
@@ -46,6 +48,7 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     app.register_blueprint(items.bp, url_prefix="/add-item")
     if app.testing:
         app.register_blueprint(api.bp)
+        csrf.exempt(api.bp)
 
     app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 

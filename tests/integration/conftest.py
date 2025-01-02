@@ -2,8 +2,9 @@ from typing import Generator
 
 import inject
 import pytest
-from flask import Flask
+from flask import Flask, session
 from flask.testing import FlaskClient
+from flask_wtf.csrf import generate_csrf
 
 from tests.integration.fakes import InMemoryCupboardRepository, InMemoryUserRepository
 from wroblewshop import create_app
@@ -44,6 +45,14 @@ def cupboards_repository_fixture() -> Generator[CupboardRepository, None, None]:
     cupboards = inject.instance(CupboardRepository)
     yield cupboards
     cupboards.clear()
+
+
+@pytest.fixture(name="csrf_token")
+def csrf_token_fixture(client: FlaskClient) -> str:
+    with client.session_transaction() as client_session:
+        csrf_token: str = generate_csrf()
+        client_session["csrf_token"] = session["csrf_token"]
+    return csrf_token
 
 
 def _test_bindings(binder: inject.Binder) -> None:

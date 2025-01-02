@@ -1,13 +1,16 @@
+import pytest
+
 from wroblewshop.domain.cupboard import Cupboard
 from wroblewshop.domain.item import Item
-from wroblewshop.views.items import AddItemContext, ItemRowContext
+from wroblewshop.views.items import AddItemContext, AddItemForm, ItemRowContext
 
 
+@pytest.mark.usefixtures("app")
 class TestAddItemContext:
     def test_create(self) -> None:
-        context = AddItemContext(items=[ItemRowContext(name="Beans")])
+        context = AddItemContext(items=[ItemRowContext(name="Beans")], form=AddItemForm())
 
-        assert context.items == [ItemRowContext(name="Beans")]
+        assert context.items == [ItemRowContext(name="Beans")] and context.form.name.data is None
 
     def test_from_domain(self) -> None:
         cupboard = Cupboard(id_=0, name="")
@@ -15,6 +18,7 @@ class TestAddItemContext:
 
         context = AddItemContext.from_domain(cupboard)
 
+        assert context.form.name.data is None
         item1: ItemRowContext
         item2: ItemRowContext
         (item1, item2) = context.items
