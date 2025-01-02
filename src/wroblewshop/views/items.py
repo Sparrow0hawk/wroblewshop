@@ -1,8 +1,12 @@
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
+
 import inject
 from flask import Blueprint, redirect, render_template, request, session, url_for
 from werkzeug import Response as BaseResponse
 
-from wroblewshop.domain.cupboard import CupboardRepository
+from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
 from wroblewshop.domain.item import Item
 from wroblewshop.domain.user import UserRepository
 from wroblewshop.views.auth import secure
@@ -20,7 +24,9 @@ def index(cupboards: CupboardRepository, users: UserRepository) -> str:
     cupboard = cupboards.get_by_name(user.cupboard)
     assert cupboard
 
-    return render_template("add-item.html")
+    context = AddItemContext.from_domain(cupboard)
+
+    return render_template("add-item.html", **asdict(context))
 
 
 @bp.post("")
@@ -37,3 +43,21 @@ def add_item(cupboards: CupboardRepository, users: UserRepository) -> BaseRespon
 
     cupboards.update(cupboard)
     return redirect(url_for("add_item.index"))
+
+
+@dataclass
+class AddItemContext:
+    items: list[ItemRowContext]
+
+    @classmethod
+    def from_domain(cls, cupboard: Cupboard) -> AddItemContext:
+        return AddItemContext(items=[ItemRowContext.from_domain(item) for item in cupboard.items.item_entries])
+
+
+@dataclass
+class ItemRowContext:
+    name: str
+
+    @classmethod
+    def from_domain(cls, item: Item) -> ItemRowContext:
+        return ItemRowContext(name=item.name)

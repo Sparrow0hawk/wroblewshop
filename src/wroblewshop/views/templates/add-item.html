@@ -8,6 +8,22 @@
         <label class="form-label" for="name">Name</label>
         <input type="text" class="form-control" id="name" name="name">
     </fieldset>
-    <input class="btn btn-success"  type="submit" value="Confirm" role="button">
+    <input class="btn btn-success" type="submit" value="Confirm" role="button">
 </form>
+<hr/>
+<h3>Cupboard Items</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

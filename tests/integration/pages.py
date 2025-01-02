@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, Iterator
+
 from bs4 import BeautifulSoup, Tag
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
@@ -71,6 +73,9 @@ class AddItemPage:
         assert form
         self.form = AddItemFormComponent(form)
         self.is_visible = heading.string == "Add item" if heading.string else False
+        table = self._soup.select_one("table")
+        assert table
+        self.table = AddItemTableComponent(table)
 
     @classmethod
     def open(cls, client: FlaskClient) -> AddItemPage:
@@ -81,3 +86,21 @@ class AddItemPage:
 class AddItemFormComponent:
     def __init__(self, form: Tag):
         self.confirm_url = form["action"]
+
+
+class AddItemTableComponent:
+    def __init__(self, table: Tag):
+        self._rows = table.select("tbody tr")
+
+    def __iter__(self) -> Iterator[AddItemTableRowComponent]:
+        return (AddItemTableRowComponent(row) for row in self._rows)
+
+    def __call__(self, *args: Any, **kwargs: Any) -> list[dict[str, str | int]]:
+        return [{"name": (cell.name or "")} for cell in self]
+
+
+class AddItemTableRowComponent:
+    def __init__(self, row: Tag):
+        cells = row.select("td")
+        item_name = cells[0]
+        self.name = item_name.string

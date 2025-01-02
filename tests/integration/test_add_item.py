@@ -14,7 +14,20 @@ def test_add_item_page_shows_heading(users: UserRepository, cupboards: CupboardR
 
     add_item_page = AddItemPage.open(client)
 
-    assert add_item_page.is_visible
+    assert add_item_page.is_visible and add_item_page.table() == []
+
+
+def test_add_item_page_shows_items(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
+    cupboard = Cupboard(id_=1, name="Palace")
+    cupboard.items.add_items(*[Item(id=2, name="Beans"), Item(id=3, name="Rice")])
+    cupboards.add(cupboard)
+    users.add(User(email="shopper@gmail.com", cupboard="Palace"))
+    with client.session_transaction() as session:
+        session["user"] = {"email": "shopper@gmail.com"}
+
+    add_item_page = AddItemPage.open(client)
+
+    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Beans"}, {"name": "Rice"}]
 
 
 def test_add_item_page_shows_confirm(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
@@ -47,9 +60,7 @@ def test_add_item_form_adds_item(users: UserRepository, cupboards: CupboardRepos
     assert item1.id == 1 and item1.name == "Sausages" and item2.name == "Beans"
 
 
-def test_add_item_form_shows_add_item(
-    users: UserRepository, cupboards: CupboardRepository, client: FlaskClient
-) -> None:
+def test_add_item_form_shows_items(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
     cupboard = Cupboard(id_=1, name="Palace")
     cupboard.items.add_item(Item(id=1, name="Sausages"))
     cupboards.add(cupboard)
@@ -57,6 +68,6 @@ def test_add_item_form_shows_add_item(
     with client.session_transaction() as session:
         session["user"] = {"email": "shopper@gmail.com"}
 
-    response = client.post("/add-item", data={"name": "Beans"})
+    add_item_page = AddItemPage(client.post("/add-item", data={"name": "Beans"}, follow_redirects=True))
 
-    assert response.status_code == 302 and response.location == "/add-item"
+    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}, {"name": "Beans"}]
