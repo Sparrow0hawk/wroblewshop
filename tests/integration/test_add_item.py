@@ -6,7 +6,7 @@ from wroblewshop.domain.item import Item
 from wroblewshop.domain.user import User, UserRepository
 
 
-def test_add_item_shows_heading(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
+def test_add_item_page_shows_heading(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
     cupboards.add(Cupboard(id_=1, name="Palace"))
     users.add(User(email="shopper@gmail.com", cupboard="Palace"))
     with client.session_transaction() as session:
@@ -17,7 +17,7 @@ def test_add_item_shows_heading(users: UserRepository, cupboards: CupboardReposi
     assert add_item_page.is_visible
 
 
-def test_add_item_form_shows_confirm(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
+def test_add_item_page_shows_confirm(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
     cupboards.add(Cupboard(id_=1, name="Palace"))
     users.add(User(email="shopper@gmail.com", cupboard="Palace"))
     with client.session_transaction() as session:
