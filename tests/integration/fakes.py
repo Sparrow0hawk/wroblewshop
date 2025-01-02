@@ -27,12 +27,18 @@ class InMemoryCupboardRepository(CupboardRepository):
     def add(self, cupboard: Cupboard) -> None:
         self._cupboards[cupboard.id] = cupboard
 
+    def get(self, id_: int) -> Cupboard | None:
+        return self._cupboards.get(id_)
+
     def get_by_name(self, name: str) -> Cupboard | None:
         cupboard_by_name = (cupboard for cupboard in self._cupboards.values() if cupboard.name == name)
         return next(cupboard_by_name, None)
 
     def get_all(self) -> list[Cupboard]:
         return [cupboard for cupboard in self._cupboards.values()]
+
+    def update(self, cupboard: Cupboard) -> None:
+        self._cupboards[cupboard.id] = cupboard
 
     def clear(self) -> None:
         self._cupboards.clear()

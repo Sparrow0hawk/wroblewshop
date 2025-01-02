@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 from playwright.sync_api import Page
 
-from tests.e2e.app_client import AppClient, CupboardRepr, UserRepr
+from tests.e2e.app_client import AppClient, CupboardRepr, ItemRepr, UserRepr
 from tests.e2e.oidc_server.users import StubUser
 from tests.e2e.oidc_server.web_client import OidcClient
 from tests.e2e.pages import HomePage
@@ -15,6 +15,6 @@ def test_add_item(app: Flask, page: Page, app_client: AppClient, oidc_client: Oi
     app_client.add_user(UserRepr(email="shopper@gmail.com", cupboard="Palace"))
     home_page = HomePage.open(page)
 
-    add_item_page = home_page.actions.add_item()
+    home_page.actions.add_item().form.enter_name("Beans").confirm()
 
-    assert add_item_page.is_visible
+    assert app_client.get_cupboard(id_=1).items == [ItemRepr(name="Beans")]

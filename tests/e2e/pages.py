@@ -79,7 +79,31 @@ class ForbiddenPage:
 class AddItemPage:
     def __init__(self, page: Page):
         self._page = page
+        self.form = AddItemFormComponent(page.get_by_role("form"))
 
     @property
     def is_visible(self) -> bool:
         return self._page.get_by_role("heading", name="Add item", exact=True).is_visible()
+
+
+class AddItemFormComponent:
+    def __init__(self, form: Locator):
+        self._form = form
+        self._name = form.get_by_label("name")
+        self._confirm = form.get_by_role("button", name="Confirm")
+
+    def enter_name(self, name: str) -> AddItemFormComponent:
+        self.name = name
+        return AddItemFormComponent(self._form)
+
+    def confirm(self) -> AddItemPage:
+        self._confirm.click()
+        return AddItemPage(self._form.page)
+
+    @property
+    def name(self) -> str:
+        return self._name.input_value()
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self._name.fill(name)

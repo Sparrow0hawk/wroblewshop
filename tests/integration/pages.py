@@ -67,9 +67,17 @@ class AddItemPage:
         self._soup = BeautifulSoup(response.text, "html.parser")
         heading = self._soup.select_one("h2")
         assert heading
+        form = self._soup.select_one("form")
+        assert form
+        self.form = AddItemFormComponent(form)
         self.is_visible = heading.string == "Add item" if heading.string else False
 
     @classmethod
     def open(cls, client: FlaskClient) -> AddItemPage:
         response = client.get("/add-item")
         return AddItemPage(response)
+
+
+class AddItemFormComponent:
+    def __init__(self, form: Tag):
+        self.confirm_url = form["action"]
