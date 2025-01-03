@@ -1,4 +1,6 @@
 import pytest
+from flask_wtf.csrf import generate_csrf
+from werkzeug.datastructures import MultiDict
 
 from wroblewshop.domain.cupboard import Cupboard
 from wroblewshop.domain.item import Item
@@ -37,3 +39,18 @@ class TestItemRowContext:
         context = ItemRowContext.from_domain(item)
 
         assert context.name == "Beans"
+
+
+@pytest.mark.usefixtures("app")
+class TestAddItemForm:
+    def test_create(self) -> None:
+        form = AddItemForm()
+
+        assert form.name.data is None
+
+    def test_no_errors_when_valid(self) -> None:
+        form = AddItemForm(formdata=MultiDict([("csrf_token", generate_csrf()), ("name", "Beans")]))
+
+        form.validate()
+
+        assert not form.errors
