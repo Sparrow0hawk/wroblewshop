@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 
 import requests
 from dacite import from_dict
@@ -19,7 +19,7 @@ class AppClient:
         response.raise_for_status()
 
     def add_cupboard(self, cupboard: CupboardRepr) -> None:
-        response = requests.post(f"{self.url}/cupboard", json={"id": cupboard.id, "name": cupboard.name})
+        response = requests.post(f"{self.url}/cupboard", json=asdict(cupboard))
         response.raise_for_status()
 
     def get_cupboard(self, id_: int) -> CupboardRepr:
@@ -47,4 +47,5 @@ class CupboardRepr:
 
 @dataclass
 class ItemRepr:
+    id: int
     name: str
