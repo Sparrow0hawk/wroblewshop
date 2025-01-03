@@ -89,21 +89,26 @@ class AddItemPage:
 class AddItemFormComponent:
     def __init__(self, form: Locator):
         self._form = form
-        self._name = form.get_by_label("name")
+        self.name = TextComponent(form.get_by_label("name"))
         self._confirm = form.get_by_role("button", name="Confirm")
 
     def enter_name(self, name: str) -> AddItemFormComponent:
-        self.name = name
+        self.name.value = name
         return AddItemFormComponent(self._form)
 
     def confirm(self) -> AddItemPage:
         self._confirm.click()
         return AddItemPage(self._form.page)
 
-    @property
-    def name(self) -> str:
-        return self._name.input_value()
 
-    @name.setter
-    def name(self, name: str) -> None:
-        self._name.fill(name)
+class TextComponent:
+    def __init__(self, input_: Locator):
+        self._input = input_
+
+    @property
+    def value(self) -> str:
+        return self._input.input_value()
+
+    @value.setter
+    def value(self, value: str) -> None:
+        self._input.fill(value)
