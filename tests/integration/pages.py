@@ -85,6 +85,9 @@ class AddItemPage:
 
 class AddItemFormComponent:
     def __init__(self, form: Tag):
+        input_ = form.select_one("input[name='name']")
+        assert input_
+        self.name = TextComponent(input_)
         self.confirm_url = form["action"]
 
 
@@ -104,3 +107,14 @@ class AddItemTableRowComponent:
         cells = row.select("td")
         item_name = cells[0]
         self.name = item_name.string
+
+
+class TextComponent:
+    def __init__(self, input_: Tag):
+        fieldset = input_.find_parent("fieldset")
+        assert fieldset
+        self.name = input_["name"]
+        self.value = input_["value"]
+        self.is_errored = "is-invalid" in input_.get_attribute_list("class")
+        error_message = fieldset.select_one(".invalid-feedback")
+        self.error = error_message.text.strip() if error_message else None

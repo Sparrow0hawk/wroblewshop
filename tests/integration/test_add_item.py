@@ -77,3 +77,23 @@ def test_add_item_form_shows_items(
     )
 
     assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}, {"name": "Beans"}]
+
+
+def test_cannot_add_item_when_error(
+    csrf_token: str, users: UserRepository, cupboards: CupboardRepository, client: FlaskClient
+) -> None:
+    cupboard = Cupboard(id_=1, name="Palace")
+    cupboard.items.add_item(Item(id=1, name="Sausages"))
+    cupboards.add(cupboard)
+    users.add(User(email="shopper@gmail.com", cupboard="Palace"))
+    with client.session_transaction() as session:
+        session["user"] = {"email": "shopper@gmail.com"}
+
+    add_item_page = AddItemPage(client.post("/add-item", data={"csrf_token": csrf_token, "name": ""}))
+
+    assert (
+        add_item_page.form.name.is_errored
+        and add_item_page.form.name.error == "Please enter item name"
+        and add_item_page.form.name.value == ""
+    )
+    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}]

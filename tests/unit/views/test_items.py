@@ -54,3 +54,10 @@ class TestAddItemForm:
         form.validate()
 
         assert not form.errors
+
+    def test_name_is_required(self) -> None:
+        form = AddItemForm(formdata=MultiDict([("csrf_token", generate_csrf()), ("name", "")]))
+
+        form.validate()
+
+        assert form.errors and form.name.errors == ["Please enter item name"]

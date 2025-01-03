@@ -100,10 +100,16 @@ class AddItemFormComponent:
         self._confirm.click()
         return AddItemPage(self._form.page)
 
+    def confirm_when_error(self) -> AddItemPage:
+        self._confirm.click()
+        return AddItemPage(self._form.page)
+
 
 class TextComponent:
     def __init__(self, input_: Locator):
         self._input = input_
+        fieldset = input_.locator("xpath=..")
+        self._error = fieldset.locator(".invalid-feedback")
 
     @property
     def value(self) -> str:
@@ -112,3 +118,10 @@ class TextComponent:
     @value.setter
     def value(self, value: str) -> None:
         self._input.fill(value)
+
+    @property
+    def error(self) -> str:
+        return (self._error.text_content() or "").strip()
+
+    def is_errored(self) -> bool:
+        return "is-invalid" in (self._input.get_attribute("class") or "")

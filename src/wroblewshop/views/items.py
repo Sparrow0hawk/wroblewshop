@@ -8,7 +8,7 @@ from flask import Blueprint, redirect, render_template, session, url_for
 from flask_wtf import FlaskForm
 from werkzeug import Response as BaseResponse
 from wtforms.fields.simple import StringField
-from wtforms.validators import DataRequired
+from wtforms.validators import InputRequired
 
 from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
 from wroblewshop.domain.item import Item
@@ -78,7 +78,7 @@ class ItemRowContext:
 
 
 class AddItemForm(FlaskForm):  # type: ignore
-    name = StringField("Name", validators=[DataRequired()])
+    name = StringField("Name", validators=[InputRequired(message="Please enter item name")])
 
 
 def _as_shallow_dict(obj: Any) -> dict[str, Any]:

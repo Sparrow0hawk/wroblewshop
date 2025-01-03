@@ -3,11 +3,20 @@
 {% block content %}
 <h2>Add item</h2>
 
-<form method="post" action="/add-item" aria-label="add-item">
+<form method="post" action="/add-item" aria-label="add-item" novalidate>
     {{ form.csrf_token }}
     <fieldset class="form-group mb-3">
         {{ form.name.label(class_="form-label") }}
-        {{ form.name(class_="form-control") }}
+        {% if form.name.errors %}
+            {{ form.name(class_="form-control is-invalid", aria_describedby="invalidNameFeedback") }}
+            {% for error in form.name.errors %}
+            <div id="invalidNameFeedback" class="invalid-feedback">
+                {{ error }}
+            </div>
+            {% endfor %}
+        {% else %}
+            {{ form.name(class_="form-control") }}
+        {% endif %}
     </fieldset>
     <input class="btn btn-success" type="submit" value="Confirm" role="button">
 </form>
