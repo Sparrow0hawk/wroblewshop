@@ -35,4 +35,4 @@ def test_home_shows_add_item(users: UserRepository, cupboards: CupboardRepositor
 
     home_page = HomePage.open(client)
 
-    assert home_page.items.add_item == "/add-item"
+    assert home_page.items.add_item == "/item"

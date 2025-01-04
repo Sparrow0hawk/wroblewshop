@@ -15,7 +15,7 @@ from wroblewshop.domain.item import CupboardItems, Item
 from wroblewshop.domain.user import UserRepository
 from wroblewshop.views.auth import secure
 
-bp = Blueprint("add_item", __name__)
+bp = Blueprint("item", __name__)
 
 
 @bp.get("")
@@ -53,7 +53,7 @@ def add_item(cupboards: CupboardRepository, users: UserRepository) -> BaseRespon
         cupboard.items.add_item(Item(id=None, name=form.name.data))
         cupboards.update(cupboard)
 
-    return redirect(url_for("add_item.index"))
+    return redirect(url_for("item.index"))
 
 
 @dataclass

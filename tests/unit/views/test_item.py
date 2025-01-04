@@ -4,7 +4,7 @@ from werkzeug.datastructures import MultiDict
 
 from wroblewshop.domain.cupboard import Cupboard
 from wroblewshop.domain.item import CupboardItems, Item
-from wroblewshop.views.items import AddItemContext, AddItemForm, ItemRowContext
+from wroblewshop.views.item import AddItemContext, AddItemForm, ItemRowContext
 
 
 @pytest.mark.usefixtures("app")

@@ -79,7 +79,7 @@ class AddItemPage:
 
     @classmethod
     def open(cls, client: FlaskClient) -> AddItemPage:
-        response = client.get("/add-item")
+        response = client.get("/item")
         return AddItemPage(response)
 
 

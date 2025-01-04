@@ -19,7 +19,7 @@ from wroblewshop.domain.cupboard import CupboardRepository
 from wroblewshop.domain.user import UserRepository
 from wroblewshop.infrastructure.cupboard import DatabaseCupboardRepository
 from wroblewshop.infrastructure.user import DatabaseUserRepository
-from wroblewshop.views import api, auth, home, items, start
+from wroblewshop.views import api, auth, home, item, start
 
 
 def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
@@ -45,7 +45,7 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     app.register_blueprint(start.bp)
     app.register_blueprint(auth.bp, url_prefix="/auth")
     app.register_blueprint(home.bp, url_prefix="/home")
-    app.register_blueprint(items.bp, url_prefix="/add-item")
+    app.register_blueprint(item.bp, url_prefix="/item")
     if app.testing:
         app.register_blueprint(api.bp)
         csrf.exempt(api.bp)

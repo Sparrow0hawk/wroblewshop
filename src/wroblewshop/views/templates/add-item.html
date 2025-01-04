@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Add item</h2>
 
-<form method="post" action="/add-item" aria-label="add-item" novalidate>
+<form method="post" action="/item" aria-label="add-item" novalidate>
     {{ form.csrf_token }}
     <fieldset class="form-group mb-3">
         {{ form.name.label(class_="form-label") }}
