@@ -8,10 +8,10 @@ from flask import Blueprint, redirect, render_template, session, url_for
 from flask_wtf import FlaskForm
 from werkzeug import Response as BaseResponse
 from wtforms.fields.simple import StringField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, ValidationError
 
 from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
-from wroblewshop.domain.item import Item
+from wroblewshop.domain.item import CupboardItems, Item
 from wroblewshop.domain.user import UserRepository
 from wroblewshop.views.auth import secure
 
@@ -44,7 +44,7 @@ def add_item(cupboards: CupboardRepository, users: UserRepository) -> BaseRespon
     cupboard = cupboards.get_by_name(user.cupboard)
     assert cupboard
 
-    form = AddItemForm()
+    form = AddItemForm.from_domain(cupboard.items)
 
     if not form.validate():
         return index()
@@ -64,7 +64,8 @@ class AddItemContext:
     @classmethod
     def from_domain(cls, cupboard: Cupboard) -> AddItemContext:
         return AddItemContext(
-            items=[ItemRowContext.from_domain(item) for item in cupboard.items.item_entries], form=AddItemForm()
+            items=[ItemRowContext.from_domain(item) for item in cupboard.items.item_entries],
+            form=AddItemForm.from_domain(cupboard.items),
         )
 
 
@@ -79,6 +80,19 @@ class ItemRowContext:
 
 class AddItemForm(FlaskForm):  # type: ignore
     name = StringField("Name", validators=[InputRequired(message="Please enter item name")])
+
+    def __init__(self, existing_items: list[Item], **kwargs: object):
+        super().__init__(**kwargs)
+        self.existing_items = existing_items
+
+    @classmethod
+    def from_domain(cls, cupboard_items: CupboardItems) -> AddItemForm:
+        return AddItemForm(existing_items=cupboard_items.item_entries)
+
+    @staticmethod
+    def validate_name(form: AddItemForm, field: StringField) -> None:
+        if field.data is not None and field.data.lower() in [item.name.lower() for item in form.existing_items]:
+            raise ValidationError("Please specify an item that doesn't already exist in the cupboard")
 
 
 def _as_shallow_dict(obj: Any) -> dict[str, Any]:

@@ -1,3 +1,5 @@
+import pytest
+
 from wroblewshop.domain.item import CupboardItems, Item
 
 
@@ -28,6 +30,13 @@ class TestCupboardItems:
         cupboard_items.add_items(*[Item(id=1, name="Beans"), Item(id=2, name="Rice")])
 
         assert cupboard_items._items == [Item(id=1, name="Beans"), Item(id=2, name="Rice")]
+
+    def test_cannot_add_item_if_item_already_exists(self) -> None:
+        cupboard_items = CupboardItems()
+        cupboard_items.add_items(*[Item(id=1, name="Beans")])
+
+        with pytest.raises(ValueError, match="Cupboard already contains item: beans"):
+            cupboard_items.add_item(Item(id=2, name="beans"))
 
 
 class TestItem:
