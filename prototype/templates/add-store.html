@@ -1,15 +1,27 @@
 {% extends '_page-two-third-width.html' %}
 
 {% block content %}
-<h2>Add new store cupboard item</h2>
+<h2>Add item</h2>
 
 <form>
     <fieldset class="form-group mb-3">
-        <legend class="form-label">Details</legend>
         <label class="form-label" for="name">Name</label>
         <input type="text" class="form-control" id="name" name="name">
     </fieldset>
     <a class="btn btn-success" href="check-store.html">Confirm</a>
 </form>
-
+<hr/>
+<h3>Cupboard Items</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Beans</td>
+    </tr>
+    </tbody>
+</table>
 {% endblock %}
