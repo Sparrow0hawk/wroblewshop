@@ -8,8 +8,14 @@
 }
 
 .column-two-thirds {
-    width: 66%;
-    float: left;
+    width: 100%;
+}
+
+@media (min-width: 40em) {
+    .column-two-thirds {
+        width: 66%;
+        float: left;
+    }
 }
 
 .actions-list {
