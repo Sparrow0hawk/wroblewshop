@@ -11,7 +11,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from inject import Binder
-from sqlalchemy import Engine
+from sqlalchemy import Engine, event
+from sqlalchemy.dialects.sqlite.base import SQLiteDialect
+from sqlalchemy.engine.interfaces import DBAPIConnection
+from sqlalchemy.pool import ConnectionPoolEntry
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.config import LocalConfig
@@ -70,7 +73,17 @@ def _create_engine(app: Flask) -> Engine:
     flask_sqlalchemy_extension: SQLAlchemy = app.extensions["sqlalchemy"]
     with app.app_context():
         engine = flask_sqlalchemy_extension.engine
+
+    if engine.dialect.name == SQLiteDialect.name:
+        event.listen(engine, "connect", _enforce_sqlite_foreign_keys)
+
     return engine
+
+
+def _enforce_sqlite_foreign_keys(dbapi_connection: DBAPIConnection, _connection_record: ConnectionPoolEntry) -> None:
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 
 @inject.autoparams()
