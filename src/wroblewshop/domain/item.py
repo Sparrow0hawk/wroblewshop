@@ -19,6 +19,9 @@ class CupboardItems:
         for item in items:
             self.add_item(item)
 
+    def delete_item(self, item_id: int) -> None:
+        self._items = [item for item in self._items if item.id != item_id]
+
     def _ensure_unique_item(self, item: Item) -> None:
         if item.name.lower() in [cupboard_item.name.lower() for cupboard_item in self._items]:
             raise ValueError(f"Cupboard already contains item: {item.name}")

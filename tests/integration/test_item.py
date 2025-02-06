@@ -14,7 +14,7 @@ def test_item_page_shows_heading(users: UserRepository, cupboards: CupboardRepos
 
     add_item_page = AddItemPage.open(client)
 
-    assert add_item_page.is_visible and add_item_page.table() == []
+    assert add_item_page.is_visible and add_item_page.delete_items() == []
 
 
 def test_item_page_shows_items(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
@@ -27,7 +27,7 @@ def test_item_page_shows_items(users: UserRepository, cupboards: CupboardReposit
 
     add_item_page = AddItemPage.open(client)
 
-    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Beans"}, {"name": "Rice"}]
+    assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Beans"}, {"name": "Rice"}]
 
 
 def test_item_page_shows_confirm(users: UserRepository, cupboards: CupboardRepository, client: FlaskClient) -> None:
@@ -76,7 +76,7 @@ def test_item_form_shows_items(
         client.post("/item", data={"csrf_token": csrf_token, "name": "Beans"}, follow_redirects=True)
     )
 
-    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}, {"name": "Beans"}]
+    assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Sausages"}, {"name": "Beans"}]
 
 
 def test_cannot_add_item_form_when_error(
@@ -96,7 +96,7 @@ def test_cannot_add_item_form_when_error(
         and add_item_page.form.name.error == "Please enter item name"
         and add_item_page.form.name.value == ""
     )
-    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}]
+    assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Sausages"}]
 
 
 def test_cannot_add_item_form_when_duplicate_item(
@@ -116,4 +116,20 @@ def test_cannot_add_item_form_when_duplicate_item(
         and add_item_page.form.name.error == "Please specify an item that doesn't already exist in the cupboard"
         and add_item_page.form.name.value == "sausages"
     )
-    assert add_item_page.is_visible and add_item_page.table() == [{"name": "Sausages"}]
+    assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Sausages"}]
+
+
+def test_delete_item_deletes_item(
+    csrf_token: str, users: UserRepository, cupboards: CupboardRepository, client: FlaskClient
+) -> None:
+    cupboard = Cupboard(id_=1, name="Palace")
+    cupboard.items.add_items(*[Item(id=1, name="Sausages"), Item(id=2, name="Beans")])
+    cupboards.add(cupboard)
+    users.add(User(email="shopper@gmail.com", cupboard="Palace"))
+    with client.session_transaction() as session:
+        session["user"] = {"email": "shopper@gmail.com"}
+
+    add_item_page = AddItemPage(client.post("/item/delete/1", data={"csrf_token": csrf_token}, follow_redirects=True))
+
+    assert add_item_page.delete_items() == [{"name": "Beans"}]
+    assert cupboard.items.item_entries == [Item(id=2, name="Beans")]

@@ -73,9 +73,9 @@ class AddItemPage:
         assert form
         self.form = AddItemFormComponent(form)
         self.is_visible = heading.string == "Add item" if heading.string else False
-        table = self._soup.select_one("table")
-        assert table
-        self.table = AddItemTableComponent(table)
+        delete_items = self._soup.select_one("hr ~ section")
+        assert delete_items
+        self.delete_items = DeleteItemSectionComponent(delete_items)
 
     @classmethod
     def open(cls, client: FlaskClient) -> AddItemPage:
@@ -91,22 +91,21 @@ class AddItemFormComponent:
         self.confirm_url = form["action"]
 
 
-class AddItemTableComponent:
-    def __init__(self, table: Tag):
-        self._rows = table.select("tbody tr")
+class DeleteItemSectionComponent:
+    def __init__(self, section: Tag):
+        self._forms = section.select("form")
 
-    def __iter__(self) -> Iterator[AddItemTableRowComponent]:
-        return (AddItemTableRowComponent(row) for row in self._rows)
+    def __iter__(self) -> Iterator[DeleteItemFormComponent]:
+        return (DeleteItemFormComponent(row) for row in self._forms)
 
     def __call__(self, *args: Any, **kwargs: Any) -> list[dict[str, str | int]]:
         return [{"name": (cell.name or "")} for cell in self]
 
 
-class AddItemTableRowComponent:
-    def __init__(self, row: Tag):
-        cells = row.select("td")
-        item_name = cells[0]
-        self.name = item_name.string
+class DeleteItemFormComponent:
+    def __init__(self, form: Tag):
+        label = form.select_one("label")
+        self.name = label.string if label else None
 
 
 class TextComponent:

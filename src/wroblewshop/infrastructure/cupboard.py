@@ -49,7 +49,11 @@ class DatabaseCupboardRepository(CupboardRepository):
         return cupboard
 
     def _cupboard_to_entity(self, cupboard: Cupboard) -> CupboardEntity:
-        cupboard_entity = CupboardEntity(id=cupboard.id, name=cupboard.name)
-        for item in cupboard.items.item_entries:
-            cupboard_entity.items.append(ItemEntity(id=item.id, name=item.name, cupboard_id=cupboard.id))
+        cupboard_entity = CupboardEntity(
+            id=cupboard.id,
+            name=cupboard.name,
+            items=[
+                ItemEntity(id=item.id, name=item.name, cupboard_id=cupboard.id) for item in cupboard.items.item_entries
+            ],
+        )
         return cupboard_entity

@@ -22,8 +22,11 @@ class CupboardEntity(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+
     users: Mapped["UserEntity"] = relationship(back_populates="cupboard")
-    items: Mapped[List["ItemEntity"]] = relationship()
+    items: Mapped[List["ItemEntity"]] = relationship(
+        back_populates="cupboard", cascade="all, delete-orphan", single_parent=True
+    )
 
 
 class ItemEntity(Base):
@@ -31,4 +34,6 @@ class ItemEntity(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
-    cupboard_id: Mapped[int] = mapped_column(ForeignKey("cupboard.id"), nullable=False)
+    cupboard_id: Mapped[int] = mapped_column(ForeignKey("cupboard.id", ondelete="CASCADE"), nullable=False)
+
+    cupboard: Mapped["CupboardEntity"] = relationship(back_populates="items")

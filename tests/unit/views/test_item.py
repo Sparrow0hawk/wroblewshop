@@ -4,18 +4,19 @@ from werkzeug.datastructures import MultiDict
 
 from wroblewshop.domain.cupboard import Cupboard
 from wroblewshop.domain.item import CupboardItems, Item
-from wroblewshop.views.item import AddItemContext, AddItemForm, ItemRowContext
+from wroblewshop.views.item import AddItemContext, AddItemForm, DeleteItemRowContext
 
 
 @pytest.mark.usefixtures("app")
 class TestAddItemContext:
     def test_create(self) -> None:
         context = AddItemContext(
-            items=[ItemRowContext(name="Beans")], form=AddItemForm(existing_items=[Item(id=1, name="Beans")])
+            items=[DeleteItemRowContext(id=1, name="Beans")],
+            form=AddItemForm(existing_items=[Item(id=1, name="Beans")]),
         )
 
         assert (
-            context.items == [ItemRowContext(name="Beans")]
+            context.items == [DeleteItemRowContext(id=1, name="Beans")]
             and context.form.name.data is None
             and context.form.existing_items == [Item(id=1, name="Beans")]
         )
@@ -27,24 +28,24 @@ class TestAddItemContext:
         context = AddItemContext.from_domain(cupboard)
 
         assert context.form.name.data is None
-        item1: ItemRowContext
-        item2: ItemRowContext
+        item1: DeleteItemRowContext
+        item2: DeleteItemRowContext
         (item1, item2) = context.items
         assert item1.name == "Beans" and item2.name == "Rice"
 
 
-class TestItemRowContext:
+class TestDeleteItemRowContext:
     def test_create(self) -> None:
-        context = ItemRowContext(name="Beans")
+        context = DeleteItemRowContext(id=1, name="Beans")
 
-        assert context.name == "Beans"
+        assert context.id == 1 and context.name == "Beans"
 
     def test_from_domain(self) -> None:
         item = Item(id=1, name="Beans")
 
-        context = ItemRowContext.from_domain(item)
+        context = DeleteItemRowContext.from_domain(item)
 
-        assert context.name == "Beans"
+        assert context.id == 1 and context.name == "Beans"
 
 
 @pytest.mark.usefixtures("app")

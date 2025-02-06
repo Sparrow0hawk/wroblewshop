@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Iterator
+
 from playwright.sync_api import Locator, Page
 
 
@@ -79,7 +81,9 @@ class ForbiddenPage:
 class AddItemPage:
     def __init__(self, page: Page):
         self._page = page
-        self.form = AddItemFormComponent(page.get_by_role("form"))
+        self.form = AddItemFormComponent(page.get_by_role("form", name="add-item"))
+        delete_item_heading = page.get_by_role("heading", name="Cupboard Items")
+        self.delete_item = DeleteItemSectionComponent(delete_item_heading.locator("xpath=.."))
 
     @property
     def is_visible(self) -> bool:
@@ -103,6 +107,36 @@ class AddItemFormComponent:
     def confirm_when_error(self) -> AddItemPage:
         self._confirm.click()
         return AddItemPage(self._form.page)
+
+
+class DeleteItemSectionComponent:
+    def __init__(self, section: Locator):
+        self._forms = section.get_by_role("form").all()
+
+    def __iter__(self) -> Iterator[DeleteItemFormComponent]:
+        return (DeleteItemFormComponent(form) for form in self._forms)
+
+    def __call__(self) -> list[dict[str, str]]:
+        return [{"name": form.label} for form in self]
+
+    def __getitem__(self, item: str) -> DeleteItemFormComponent:
+        return next(form for form in self if form.label == item)
+
+
+class DeleteItemFormComponent:
+    def __init__(self, form: Locator):
+        rows = form.get_by_role("row").all()
+        self._label = rows[0]
+        delete_row = rows[1]
+        self._delete = delete_row.get_by_role("button")
+
+    @property
+    def label(self) -> str:
+        return (self._label.text_content() or "").strip()
+
+    def delete(self) -> AddItemPage:
+        self._delete.click()
+        return AddItemPage(self._delete.page)
 
 
 class TextComponent:

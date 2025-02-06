@@ -52,6 +52,7 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     if app.testing:
         app.register_blueprint(api.bp)
         csrf.exempt(api.bp)
+        csrf.exempt(item.delete_item)
 
     app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 

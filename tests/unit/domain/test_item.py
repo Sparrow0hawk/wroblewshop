@@ -38,6 +38,14 @@ class TestCupboardItems:
         with pytest.raises(ValueError, match="Cupboard already contains item: beans"):
             cupboard_items.add_item(Item(id=2, name="beans"))
 
+    def test_delete_item(self) -> None:
+        cupboard_items = CupboardItems()
+        cupboard_items.add_items(*[Item(id=1, name="Beans"), Item(id=2, name="Rice")])
+
+        cupboard_items.delete_item(1)
+
+        assert cupboard_items._items == [Item(id=2, name="Rice")]
+
 
 class TestItem:
     def test_create(self) -> None:

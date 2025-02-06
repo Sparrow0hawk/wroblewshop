@@ -21,19 +21,19 @@
     <input class="btn btn-success" type="submit" value="Confirm" role="button">
 </form>
 <hr/>
-<h3>Cupboard Items</h3>
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-    </tr>
-    </thead>
-    <tbody>
+<section>
+    <h3>Cupboard Items</h3>
     {% for item in items %}
-    <tr>
-        <td>{{ item.name }}</td>
-    </tr>
+    <form method="post" action="{{ url_for('item.delete_item', item_id=item.id) }}" aria-label="delete-item-{{ item.name | lower }}" novalidate>
+        <div class="row" role="row">
+            <div class="col">
+                <label for="delete-{{ item.name | lower }}">{{ item.name }}</label>
+            </div>
+            <div class="col" role="row">
+                <input id="delete-{{ item.name | lower }}" value="Delete" type="submit" role="button">
+            </div>
+        </div>
+    </form>
     {% endfor %}
-    </tbody>
-</table>
+</section>
 {% endblock %}

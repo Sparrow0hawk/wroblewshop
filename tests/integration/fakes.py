@@ -1,4 +1,5 @@
 from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
+from wroblewshop.domain.item import Item
 from wroblewshop.domain.user import User, UserRepository
 
 
@@ -38,7 +39,22 @@ class InMemoryCupboardRepository(CupboardRepository):
         return [cupboard for cupboard in self._cupboards.values()]
 
     def update(self, cupboard: Cupboard) -> None:
+        self._enforce_item_ids(cupboard)
         self._cupboards[cupboard.id] = cupboard
 
     def clear(self) -> None:
         self._cupboards.clear()
+
+    @staticmethod
+    def _enforce_item_ids(cupboard: Cupboard) -> None:
+        def _get_next_id(item_ids: list[int | None]) -> int:
+            return max([id_ for id_ in item_ids if id_ is not None]) + 1
+
+        item_ids = [item.id for item in cupboard.items.item_entries]
+        if None in item_ids:
+            item_with_no_id = next(item for item in cupboard.items.item_entries if not item.id)
+            replacement_item = Item(id=_get_next_id(item_ids), name=item_with_no_id.name)
+
+            cupboard.items._items = [item for item in cupboard.items.item_entries if item.id is not None] + [
+                replacement_item
+            ]

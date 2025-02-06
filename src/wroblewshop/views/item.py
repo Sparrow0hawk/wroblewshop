@@ -58,24 +58,26 @@ def add_item(cupboards: CupboardRepository, users: UserRepository) -> BaseRespon
 
 @dataclass
 class AddItemContext:
-    items: list[ItemRowContext]
+    items: list[DeleteItemRowContext]
     form: AddItemForm
 
     @classmethod
     def from_domain(cls, cupboard: Cupboard) -> AddItemContext:
         return AddItemContext(
-            items=[ItemRowContext.from_domain(item) for item in cupboard.items.item_entries],
+            items=[DeleteItemRowContext.from_domain(item) for item in cupboard.items.item_entries],
             form=AddItemForm.from_domain(cupboard.items),
         )
 
 
 @dataclass
-class ItemRowContext:
+class DeleteItemRowContext:
+    id: int
     name: str
 
     @classmethod
-    def from_domain(cls, item: Item) -> ItemRowContext:
-        return ItemRowContext(name=item.name)
+    def from_domain(cls, item: Item) -> DeleteItemRowContext:
+        assert item.id
+        return DeleteItemRowContext(id=item.id, name=item.name)
 
 
 class AddItemForm(FlaskForm):  # type: ignore
@@ -93,6 +95,21 @@ class AddItemForm(FlaskForm):  # type: ignore
     def validate_name(form: AddItemForm, field: StringField) -> None:
         if field.data is not None and field.data.lower() in [item.name.lower() for item in form.existing_items]:
             raise ValidationError("Please specify an item that doesn't already exist in the cupboard")
+
+
+@bp.post("/delete/<int:item_id>")
+@inject.autoparams()
+def delete_item(item_id: int, users: UserRepository, cupboards: CupboardRepository) -> BaseResponse:
+    user_info = session["user"]
+    user = users.get_by_email(user_info["email"])
+    assert user
+    cupboard = cupboards.get_by_name(user.cupboard)
+    assert cupboard
+
+    cupboard.items.delete_item(item_id)
+    cupboards.update(cupboard)
+
+    return redirect(url_for("item.index"))
 
 
 def _as_shallow_dict(obj: Any) -> dict[str, Any]:
