@@ -4,6 +4,7 @@ services:
     build: .
     env_file: .env
     environment:
+      FLASK_ENV: fly
       FLASK_SQLALCHEMY_DATABASE_URI: "postgresql+psycopg://shopper:password@database/shopper"
     ports:
       - "5000:5000"
