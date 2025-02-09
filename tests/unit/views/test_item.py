@@ -28,6 +28,7 @@ class TestAddItemContext:
         context = AddItemContext.from_domain(cupboard)
 
         assert context.form.name.data is None
+        assert context.form.existing_items == [Item(id=1, name="Beans"), Item(id=2, name="Rice")]
         item1: DeleteItemRowContext
         item2: DeleteItemRowContext
         (item1, item2) = context.items
