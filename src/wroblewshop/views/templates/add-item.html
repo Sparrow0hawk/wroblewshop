@@ -24,15 +24,18 @@
 <section>
     <h3>Cupboard Items</h3>
     {% for item in items %}
-    <form method="post" action="{{ url_for('item.delete_item', item_id=item.id) }}" aria-label="delete-item-{{ item.name | lower }}" novalidate>
+    <form method="post" action="{{ url_for('item.delete_item', item_id=item.id) }}" aria-label="delete-item" novalidate>
+        {{ item.form.csrf_token }}
+        {% for field in item.form if field.name != "csrf_token" %}
         <div class="row" role="row">
             <div class="col">
-                <label for="delete-{{ item.name | lower }}">{{ item.name }}</label>
+                {{ field.label() }}
             </div>
             <div class="col" role="row">
-                <input id="delete-{{ item.name | lower }}" value="Delete" type="submit" role="button">
+                {{ field(value="Delete") }}
             </div>
         </div>
+        {% endfor %}
     </form>
     {% endfor %}
 </section>

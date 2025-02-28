@@ -7,7 +7,7 @@ import inject
 from flask import Blueprint, redirect, render_template, session, url_for
 from flask_wtf import FlaskForm
 from werkzeug import Response as BaseResponse
-from wtforms.fields.simple import StringField
+from wtforms.fields.simple import StringField, SubmitField
 from wtforms.validators import InputRequired, ValidationError
 
 from wroblewshop.domain.cupboard import Cupboard, CupboardRepository
@@ -72,12 +72,12 @@ class AddItemContext:
 @dataclass
 class DeleteItemRowContext:
     id: int
-    name: str
+    form: DeleteItemForm
 
     @classmethod
     def from_domain(cls, item: Item) -> DeleteItemRowContext:
         assert item.id
-        return DeleteItemRowContext(id=item.id, name=item.name)
+        return DeleteItemRowContext(id=item.id, form=DeleteItemForm.from_domain(item))
 
 
 class AddItemForm(FlaskForm):  # type: ignore
@@ -106,10 +106,34 @@ def delete_item(item_id: int, users: UserRepository, cupboards: CupboardReposito
     cupboard = cupboards.get_by_name(user.cupboard)
     assert cupboard
 
-    cupboard.items.delete_item(item_id)
+    # TODO: should domain allow for item getter
+    item = next(item for item in cupboard.items.item_entries if item.id == item_id)
+    form = DeleteItemForm.from_domain(item)
+
+    if not form.validate():
+        return index()
+
+    cupboard.items.delete_item(item_id=item_id)
     cupboards.update(cupboard)
 
     return redirect(url_for("item.index"))
+
+
+class DeleteItemForm(FlaskForm):  # type: ignore
+    @staticmethod
+    def create_class(item: Item) -> type[DeleteItemForm]:
+        class DynamicDeleteItemForm(DeleteItemForm):
+            pass
+
+        field = SubmitField(label=item.name)
+        setattr(DynamicDeleteItemForm, f"delete_{item.name.lower()}", field)
+
+        return DynamicDeleteItemForm
+
+    @classmethod
+    def from_domain(cls, item: Item) -> DeleteItemForm:
+        form_class = DeleteItemForm.create_class(item)
+        return form_class()
 
 
 def _as_shallow_dict(obj: Any) -> dict[str, Any]:
