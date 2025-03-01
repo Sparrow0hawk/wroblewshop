@@ -5,6 +5,15 @@
 
 <form method="post" action="/item" aria-label="add-item" novalidate>
     {{ form.csrf_token }}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+        <div id="invalid-csrf" class="alert alert-danger">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
     <fieldset class="form-group mb-3">
         {{ form.name.label(class_="form-label") }}
         {% if form.name.errors %}

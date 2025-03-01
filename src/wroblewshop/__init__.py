@@ -7,14 +7,16 @@ import flask_session
 import inject
 from alembic import command
 from authlib.integrations.flask_client import OAuth
-from flask import Flask
+from flask import Flask, flash, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 from inject import Binder
 from sqlalchemy import Engine, event
 from sqlalchemy.dialects.sqlite.base import SQLiteDialect
 from sqlalchemy.engine.interfaces import DBAPIConnection
 from sqlalchemy.pool import ConnectionPoolEntry
+from werkzeug import Response as BaseResponse
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from wroblewshop.config import LocalConfig
@@ -42,6 +44,7 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     csrf = CSRFProtect(app)
 
     _create_database()
+    _configure_error_pages(app)
 
     _configure_oidc(app)
 
@@ -52,7 +55,6 @@ def create_app(test_config: Mapping[str, Any] | None = None) -> Flask:
     if app.testing:
         app.register_blueprint(api.bp)
         csrf.exempt(api.bp)
-        csrf.exempt(item.delete_item)
 
     app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 
@@ -96,6 +98,13 @@ def _create_database(engine: Engine) -> None:
     with engine.connect() as connection:
         alembic_config.attributes["connection"] = connection
         command.upgrade(alembic_config, "head")
+
+
+def _configure_error_pages(app: Flask) -> None:
+    @app.errorhandler(CSRFError)
+    def csrf_error(_error: CSRFError) -> BaseResponse:
+        flash("The form you were submitting has expired. Please try again.")
+        return redirect(request.referrer)
 
 
 def _configure_oidc(app: Flask) -> None:

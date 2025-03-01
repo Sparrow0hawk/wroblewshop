@@ -85,6 +85,8 @@ class AddItemPage:
 
 class AddItemFormComponent:
     def __init__(self, form: Tag):
+        alert = form.select_one(".alert-danger")
+        self.alert = alert.text.strip() if alert else None
         input_ = form.select_one("input[name='name']")
         assert input_
         self.name = TextComponent(input_)

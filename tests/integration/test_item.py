@@ -99,6 +99,24 @@ def test_cannot_add_item_form_when_error(
     assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Sausages"}]
 
 
+def test_cannot_add_item_form_when_no_csrf_token(
+    users: UserRepository, cupboards: CupboardRepository, client: FlaskClient
+) -> None:
+    cupboard = Cupboard(id_=1, name="Palace")
+    cupboard.items.add_item(Item(id=1, name="Sausages"))
+    cupboards.add(cupboard)
+    users.add(User(email="shopper@gmail.com", cupboard="Palace"))
+    with client.session_transaction() as session:
+        session["user"] = {"email": "shopper@gmail.com"}
+
+    add_item_page = AddItemPage(
+        client.post("/item", headers={"referer": "/item"}, data={"name": "Beans"}, follow_redirects=True)
+    )
+
+    assert add_item_page.form.alert == "The form you were submitting has expired. Please try again."
+    assert add_item_page.is_visible and add_item_page.delete_items() == [{"name": "Sausages"}]
+
+
 def test_cannot_add_item_form_when_duplicate_item(
     csrf_token: str, users: UserRepository, cupboards: CupboardRepository, client: FlaskClient
 ) -> None:
